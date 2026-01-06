@@ -19,7 +19,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:stylelint": "stylelint  \"**/*.{css,scss,less,vue,html}\" --fix",
-    "lint:lint-staged": "lint-staged"
+    "lint:lint-staged": "lint-staged",
+    "cz": "git pull && git add -A && git-cz"
   },
   "dependencies": {
     "pinia": "^3.0.4",
@@ -45,6 +46,7 @@
     "eslint-plugin-format": "^1.2.0",
     "eslint-plugin-playwright": "^2.4.0",
     "eslint-plugin-vue": "~10.6.2",
+    "git-cz": "^4.9.0",
     "husky": "^8.0.0",
     "jiti": "^2.6.1",
     "jsdom": "^27.3.0",
