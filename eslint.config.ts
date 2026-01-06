@@ -10,13 +10,12 @@ export default antfu({
     indent: 2, // 缩进 2 个空格, 2 | 4 | 'tab'
     quotes: "double", // 使用双引号, single | 'double'
     semi: true, // 强制分号结尾, true | false
-    bracketSpacing: true, // 对象字面量括号加空格，如 `{ foo: bar }`
-    braceStyle: "1tbs", // 大括号换行风格（One True Brace Style）
-    commaDangle: "never", // 禁止尾随逗号
+    // braceStyle: "1tbs", // 大括号换行风格（One True Brace Style）
+    // commaDangle: "never", // 禁止尾随逗号
     jsx: true, // 支持 JSX 语法
-    blockSpacing: true, // 代码块内加空格，如 `function foo() {}`
-    multilineComments: true, // 多行注释风格
-    preferArrowFunctions: true, // 优先使用箭头函数
+    // blockSpacing: true, // 代码块内加空格，如 `function foo() {}`
+    // multilineComments: true, // 多行注释风格
+    // preferArrowFunctions: true, // 优先使用箭头函数
 
     // spaceBeforeFunctionParen: "always", // 函数名和参数括号间加空格
     // spaceInParens: "never", // 括号内不加空格
