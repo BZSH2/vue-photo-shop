@@ -45,4 +45,4 @@ jobs:
           # 路径参数更新
           publish_dir: dist  # 原 folder/target-folder
           # destination_dir: .   # 目标子目录（默认为仓库根目录）
-          github_token: ${{ secrets.REACT_ADMIN_TEMPLATE }}
+          github_token: ${{ secrets.VUEPHOTOSHOP }}
