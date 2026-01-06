@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# 先检查 debugger
+. "$(dirname -- "$0")/_/check-keyword.sh"
+
+# npm test
+# npm run lint:lint-staged --allow-empty
+pnpm run lint:lint-staged --allow-empty
+

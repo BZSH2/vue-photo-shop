@@ -1,0 +1,12 @@
+/dist/*
+/public/*
+
+node_modules
+.husky
+.vscode
+.idea
+*.sh
+*.md
+
+stats.html
+
