@@ -1,7 +1,7 @@
 <template>
   <div class="layout-container">
     <Header />
-    <div>
+    <div class="layout-main">
       <Nav />
       <Main />
       <Aside />
@@ -19,5 +19,10 @@ import Nav from "./components/Nav.vue";
 <style lang="scss" scoped>
 .layout-container {
   background-color: var(--background-color-secondary-regular);
+  .layout-main {
+    height: calc(100% - 60px);
+    display: flex;
+    justify-content: space-between;
+  }
 }
 </style>
