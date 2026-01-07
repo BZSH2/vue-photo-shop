@@ -1,0 +1,15 @@
+@use './variables.scss' as *;
+@import './normalize.css';
+
+* {
+  box-sizing: border-box;
+}
+
+#app {
+  height: 100%;
+}
+
+[class$='-container'] {
+  width: 100%;
+  height: 100%;
+}
