@@ -23,6 +23,7 @@
     "cz": "git pull && git add -A && git-cz"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
     "element-plus": "^2.13.0",
     "pinia": "^3.0.4",
     "vue": "^3.5.26",
