@@ -14,6 +14,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Aside: typeof import('./src/components/Layout/components/Aside.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElIcon: typeof import('element-plus/es')['ElIcon']
     Header: typeof import('./src/components/Layout/components/Header.vue')['default']
     Layout: typeof import('./src/components/Layout/index.vue')['default']
     Main: typeof import('./src/components/Layout/components/Main.vue')['default']
@@ -27,6 +28,7 @@ declare module 'vue' {
 declare global {
   const Aside: typeof import('./src/components/Layout/components/Aside.vue')['default']
   const ElButton: typeof import('element-plus/es')['ElButton']
+  const ElIcon: typeof import('element-plus/es')['ElIcon']
   const Header: typeof import('./src/components/Layout/components/Header.vue')['default']
   const Layout: typeof import('./src/components/Layout/index.vue')['default']
   const Main: typeof import('./src/components/Layout/components/Main.vue')['default']
