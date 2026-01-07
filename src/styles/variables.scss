@@ -1,11 +1,12 @@
 /* 在 :root 中定义全局变量 */
 :root {
   /* 命名规范：使用 kebab-case */
-  --background-color-divider-regular: #e0e0e0;
+  --background-color-divider-regular: rgba(0, 0, 0, 0.05);
   --background-color-divider-hover: #bdbdbd;
   --background-color-divider-active: #9e9e9e;
   --background-color-secondary-regular: #f6f7f9;
   --background-color-primary-regular: #fff; // 标准主色
   --background-color-transparent-primary-hover: rgba(0, 0, 0, .04); // 标准hover主色
-  --border-radius-main: 4px
+  --border-radius-main: 6px;
+  --text-color-primary: #222529;
 }
