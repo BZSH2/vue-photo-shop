@@ -4,11 +4,12 @@
   </main>
 </template>
 
-<script lang="ts" setup></script>
+<script setup lang="ts">
+onMounted(() => {
+  console.log(1);
+});
+</script>
 
 <style lang="scss" scoped>
-.main-wrap {
-  height: 100%;
-  flex: 1;
-}
+
 </style>

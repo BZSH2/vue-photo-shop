@@ -8,11 +8,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import NavAside from "./components/NavAside.vue";
-import NavInner from "./components/NavInner.vue";
+import { ref } from 'vue';
+import NavAside from './components/NavAside.vue';
+import NavInner from './components/NavInner.vue';
 
-const active = ref("add");
+const active = ref('');
 </script>
 
 <style lang="scss" scoped>

@@ -8,7 +8,7 @@ export default antfu({
   // 或者你可以更加细粒度的设置
   stylistic: {
     indent: 2, // 缩进 2 个空格, 2 | 4 | 'tab'
-    quotes: "double", // 使用双引号, single | 'double'
+    quotes: "single", // 使用双引号, single | 'double'
     semi: true, // 强制分号结尾, true | false
     // braceStyle: "1tbs", // 大括号换行风格（One True Brace Style）
     // commaDangle: "never", // 禁止尾随逗号
