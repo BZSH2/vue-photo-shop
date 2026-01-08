@@ -5,7 +5,9 @@
     </header>
     <div class="layout-main">
       <slot name="nav" />
-      <Main />
+      <main class="main-wrap">
+        <slot name="main" />
+      </main>
       <Aside />
     </div>
   </div>
@@ -13,7 +15,6 @@
 
 <script setup lang="ts">
 import Aside from "./components/Aside.vue";
-import Main from "./components/Main.vue";
 </script>
 
 <style lang="scss" scoped>
@@ -31,6 +32,10 @@ import Main from "./components/Main.vue";
     height: calc(100% - 60px);
     display: flex;
     justify-content: space-between;
+    .main-wrap {
+      height: 100%;
+      flex: 1;
+    }
   }
 }
 </style>
