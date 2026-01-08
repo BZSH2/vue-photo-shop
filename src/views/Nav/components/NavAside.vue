@@ -4,11 +4,11 @@
       v-for="(item, key) in navList"
       :key="key"
       class="nav-item"
-      :class="{ 'nav-item-active': props.active === item.key }"
-      @click="clickNavItem(item.key)"
+      :class="{ 'nav-item-active': props.modelValue === item.key }"
+      @click="emit('update:modelValue', item.key)"
     >
       <ElIcon class="nav-item-icon">
-        <component :is="(props.active === item.key && item.activeIcon) ? item.activeIcon : item.icon" />
+        <component :is="(props.modelValue === item.key && item.activeIcon) ? item.activeIcon : item.icon" />
       </ElIcon>
       <span class="nav-item-title">{{ item.title }}</span>
     </div>
@@ -19,17 +19,12 @@
 import { CirclePlus, CirclePlusFilled, CopyDocument, Picture, PictureFilled } from "@element-plus/icons-vue";
 
 const props = defineProps({
-  active: {
+  modelValue: {
     type: String,
     default: () => "",
   },
 });
-
-const emit = defineEmits(["update:active"]);
-
-function clickNavItem(key: string) {
-  emit("update:active", key);
-}
+const emit = defineEmits(["update:modelValue"]);
 
 const navList = [
   {
@@ -59,6 +54,7 @@ const navList = [
   padding: 12px 0 0;
   background-color: var(--background-color-primary-regular);
   border-right: 1px solid var(--background-color-divider-regular);
+  z-index: 1;
 }
 
 .nav-item {
@@ -72,7 +68,7 @@ const navList = [
   &-icon {
     width: 54px;
     height: 36px;
-    font-size: 24px;
+    font-size: 22px;
     &:hover {
       background-color: var(--background-color-transparent-primary-hover);
       border-radius: var(--border-radius-main);
