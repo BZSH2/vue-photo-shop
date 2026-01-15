@@ -74,7 +74,7 @@ function startTouchResize(e: TouchEvent) {
   e.preventDefault();
   isResizing.value = true;
   const touch = e.touches[0];
-  startX.value = touch.clientX;
+  startX.value = touch?.clientX ?? 0;
   startWidth.value = width.value;
 
   document.addEventListener('touchmove', handleTouchResize);
@@ -104,8 +104,8 @@ function handleTouchResize(e: TouchEvent) {
   e.preventDefault();
   const touch = e.touches[0];
   const deltaX = props.direction === 'left'
-    ? startX.value - touch.clientX
-    : touch.clientX - startX.value;
+    ? startX.value - (touch?.clientX ?? 0)
+    : (touch?.clientX ?? 0) - startX.value;
 
   calculateNewWidth(deltaX);
 }
