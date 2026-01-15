@@ -39,7 +39,7 @@ async function getFolders() {
   const paths = Object.keys(modules);
   for (const path of paths) {
     if (!path.startsWith(`${basePath}/`))
-      return;
+      continue;
 
     const relativePath = path.slice(basePath.length);
     const parts = relativePath.split('/');
@@ -60,9 +60,9 @@ async function getFolders() {
       folderMap[folder].psd = `${basePath}/${relativePath}`;
     }
     if (suffixList.includes(suffix.toLocaleLowerCase())) {
-      folderMap[folder].image = `${basePath}/${relativePath}`;
       const mod = modules[path] as any;
       const url = (mod?.default || mod) as string;
+      folderMap[folder].image = url;
       const { width, height } = await getImageSize(url);
       folderMap[folder].width = width;
       folderMap[folder].height = height;
