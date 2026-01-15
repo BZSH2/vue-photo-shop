@@ -6,9 +6,6 @@ import mitt from 'mitt';
 interface TemplateEvents {
   'template-change': TemplateChangeData;
   'template-saved': TemplateSavedData;
-  'template-deleted': TemplateDeletedData;
-  'template-loaded': TemplateLoadedData;
-  'template-preview': TemplatePreviewData;
   'template-selected': TemplateSelectedData;
   'template-drag-start': TemplateDragData;
   'template-drag-end': TemplateDragData;
@@ -84,7 +81,8 @@ export enum EventType {
 }
 
 // 事件总线实例
-const emitter: Emitter<TemplateEvents> = mitt<TemplateEvents>();
+// src/utils/eventBus.ts
+const emitter: Emitter<Record<EventType, unknown>> = mitt<Record<EventType, unknown>>();
 
 // 封装的事件总线
 const TemplateEventBus = {
@@ -92,39 +90,9 @@ const TemplateEventBus = {
 
   // 发送模板变化事件
   emitTemplateChange(data: Omit<TemplateChangeData, 'timestamp'>) {
-    emitter.emit('template-change', {
+    emitter.emit(EventType.TEMPLATE_CHANGE, {
       timestamp: new Date(),
       ...data,
-    });
-  },
-
-  // 发送模板保存事件
-  emitTemplateSaved(template: any, success: boolean = true) {
-    emitter.emit('template-saved', {
-      timestamp: new Date(),
-      template,
-      message: success ? '模板已保存成功' : '模板保存失败',
-      success,
-    });
-  },
-
-  // 发送模板选择事件
-  emitTemplateSelected(templateId: string | number, templateName: string) {
-    emitter.emit('template-selected', {
-      timestamp: new Date(),
-      templateId,
-      templateName,
-      message: '模板已选择',
-    });
-  },
-
-  // 发送组件事件
-  emitComponentAdded(component: ComponentEventData['component'], position?: { x: number; y: number }) {
-    emitter.emit('component-added', {
-      timestamp: new Date(),
-      component,
-      position,
-      message: '组件已添加',
     });
   },
 
