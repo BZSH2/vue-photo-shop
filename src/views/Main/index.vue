@@ -1,15 +1,19 @@
 <template>
-  <main class="main-wrap">
-    main
-  </main>
+  <div class="main-container">
+    <img src="@/assets/psd/psd40652/psd40652.jpg" alt="">
+  </div>
 </template>
 
 <script setup lang="ts">
+async function initData() {
+  // const res = await fetch('@/assets/psd/1.psd');
+  // console.log(res);
+}
+
 onMounted(() => {
-  console.log(1);
+  // initData();
 });
 </script>
 
 <style lang="scss" scoped>
-
 </style>

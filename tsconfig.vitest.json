@@ -1,11 +1,19 @@
 {
   "extends": "./tsconfig.app.json",
-  "include": ["src/**/__tests__/*", "env.d.ts"],
   "exclude": [],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
 
     "lib": [],
-    "types": ["node", "jsdom"]
-  }
+    "types": ["node", "jsdom", "vite/client", "unplugin-auto-import/types"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/auto-imports.d.ts",  // 确保包含这个
+    "src/components.d.ts",
+    "src/**/__tests__/*"    // 如果使用 unplugin-vue-components
+  ],
 }

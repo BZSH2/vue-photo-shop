@@ -16,33 +16,38 @@
 </template>
 
 <script setup lang="ts">
-import { CirclePlus, CirclePlusFilled, CopyDocument, Picture, PictureFilled } from "@element-plus/icons-vue";
+import { CirclePlus, CirclePlusFilled, CopyDocument, FolderOpened, Picture, PictureFilled } from '@element-plus/icons-vue';
 
 const props = defineProps({
   modelValue: {
     type: String,
-    default: () => "",
+    default: () => '',
   },
 });
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(['update:modelValue']);
 
 const navList = [
   {
     icon: CirclePlus,
     activeIcon: CirclePlusFilled,
-    title: "添加",
-    key: "add",
+    title: '添加',
+    key: 'add',
+  },
+  {
+    icon: FolderOpened,
+    title: '模版',
+    key: 'template',
   },
   {
     icon: Picture,
     activeIcon: PictureFilled,
-    title: "图片",
-    key: "image",
+    title: '图片',
+    key: 'image',
   },
   {
     icon: CopyDocument,
-    title: "我的",
-    key: "my",
+    title: '我的',
+    key: 'my',
   },
 ];
 </script>

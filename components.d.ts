@@ -21,6 +21,7 @@ declare module 'vue' {
     Nav: typeof import('./src/components/Layout/components/Nav.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Template: typeof import('./src/components/Nav/Template/index.vue')['default']
   }
 }
 
@@ -35,4 +36,5 @@ declare global {
   const Nav: typeof import('./src/components/Layout/components/Nav.vue')['default']
   const RouterLink: typeof import('vue-router')['RouterLink']
   const RouterView: typeof import('vue-router')['RouterView']
+  const Template: typeof import('./src/components/Nav/Template/index.vue')['default']
 }

@@ -8,14 +8,10 @@
       <main class="main-wrap">
         <slot name="main" />
       </main>
-      <Aside />
+      <slot name="aside" />
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import Aside from "./components/Aside.vue";
-</script>
 
 <style lang="scss" scoped>
 .layout-container {
