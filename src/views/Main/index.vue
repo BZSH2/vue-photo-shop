@@ -5,14 +5,14 @@
 </template>
 
 <script setup lang="ts">
-async function initData() {
-  // const res = await fetch('@/assets/psd/1.psd');
-  // console.log(res);
-}
+// async function initData() {
+// const res = await fetch('@/assets/psd/1.psd');
+// console.log(res);
+// }
 
-onMounted(() => {
-  // initData();
-});
+// onMounted(() => {
+//   // initData();
+// });
 </script>
 
 <style lang="scss" scoped>
