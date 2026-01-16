@@ -16,8 +16,10 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useEventBus } from '@/hooks/useEventBus';
 
 const templateList = ref<any[]>([]);
+const { emit } = useEventBus();
 
 /** 获取本地psd文件 */
 async function getFolders() {
@@ -109,7 +111,7 @@ function getImageSize(imageUrl: string): Promise<{ width: number; height: number
 
 /** 点击模板 */
 function handleClick(item: any) {
-  console.log(item);
+  emit('selectTemplate', item);
 }
 
 onMounted(async () => {

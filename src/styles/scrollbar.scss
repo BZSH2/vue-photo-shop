@@ -1,0 +1,161 @@
+/* macOS 风格滚动条样式 */
+* {
+  /* Firefox 兼容 - 薄滚动条，自动隐藏 */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+/* 悬停时显示滚动条（Firefox） */
+*:hover {
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* 移除滚动条按钮（上下箭头） */
+::-webkit-scrollbar-button {
+  display: none; /* 隐藏箭头按钮 */
+  width: 0;
+  height: 0;
+}
+
+/* WebKit 浏览器滚动条 */
+::-webkit-scrollbar {
+  width: 12px; /* 调整为更合适的宽度 */
+  height: 12px;
+  background-color: transparent;
+  opacity: 0; /* 默认隐藏 */
+  transition: opacity 0.3s ease;
+}
+
+/* 悬停或滚动时显示 */
+:hover::-webkit-scrollbar,
+:active::-webkit-scrollbar {
+  opacity: 1;
+}
+
+/* 滚动条轨道 */
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 6px; /* 圆角轨道 */
+  margin: 4px; /* 增加边距，让滚动条更"悬浮" */
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 6px; /* 圆角滑块 */
+  border: 3px solid transparent; /* 透明边框创造内边距效果 */
+  background-clip: content-box; /* 关键：使背景只填充内容区域 */
+  transition: all 0.3s ease;
+  opacity: 0; /* 默认隐藏滑块 */
+  min-height: 20px; /* 最小高度，避免太短 */
+}
+
+/* 水平滚动条滑块 */
+::-webkit-scrollbar-thumb:horizontal {
+  min-width: 20px; /* 最小宽度 */
+}
+
+/* 悬停时显示滑块 */
+:hover::-webkit-scrollbar-thumb,
+:active::-webkit-scrollbar-thumb {
+  opacity: 1;
+}
+
+/* 悬停在滑块上 */
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid transparent; /* 悬停时边框变薄 */
+  border-radius: 6px; /* 保持圆角 */
+  background-clip: content-box;
+}
+
+/* 活动状态（正在拖拽） */
+::-webkit-scrollbar-thumb:active {
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 6px; /* 保持圆角 */
+}
+
+/* 滚动条角部（水平和垂直滚动条交叉处） */
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+  border-radius: 0 6px 0 0; /* 可选：给角部也加点圆角 */
+}
+
+/* Safari 特定优化 */
+@supports (-webkit-appearance: none) and (not (overflow: -webkit-marquee)) {
+  ::-webkit-scrollbar {
+    width: 13px; /* Safari 上稍宽一些 */
+  }
+
+  /* 确保箭头被移除 */
+  ::-webkit-scrollbar-button:vertical:start:decrement,
+  ::-webkit-scrollbar-button:vertical:end:increment,
+  ::-webkit-scrollbar-button:horizontal:start:decrement,
+  ::-webkit-scrollbar-button:horizontal:end:increment {
+    display: none;
+  }
+}
+
+/* 可选的：针对特定元素的增强样式 */
+.macos-scroll {
+  overflow: overlay !important;
+  scrollbar-gutter: stable;
+}
+
+/* 可选的：更细的滚动条变体 */
+.thin-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.thin-scroll::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 4px; /* 小一点的圆角 */
+}
+
+.thin-scroll::-webkit-scrollbar-thumb:hover {
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+/* 可选的：强制显示滚动条 */
+.always-visible-scroll::-webkit-scrollbar-thumb {
+  opacity: 0.6 !important;
+  border-radius: 6px;
+}
+
+.always-visible-scroll:hover::-webkit-scrollbar-thumb {
+  opacity: 1 !important;
+  border-radius: 6px;
+}
+
+/* 隐藏滚动条但保留功能 */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* 针对特定元素的圆角滚动条 */
+.rounded-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 8px; /* 更大的圆角 */
+}
+
+.rounded-scrollbar::-webkit-scrollbar-track {
+  border-radius: 8px;
+}
+
+/* 针对触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  ::-webkit-scrollbar {
+    width: 16px; /* 触摸设备上更宽一些 */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    opacity: 0.6; /* 触摸设备上默认显示 */
+    border-radius: 8px; /* 触摸设备上更大的圆角 */
+  }
+}

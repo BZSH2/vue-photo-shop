@@ -6,7 +6,9 @@
       :style="{ width: `${drawerWidth}px` }"
     >
       <div v-if="modelValue" class="nav-inner-main">
-        <slot />
+        <el-scrollbar height="100%">
+          <slot />
+        </el-scrollbar>
       </div>
       <!-- 拖拽手柄 -->
       <div
@@ -23,8 +25,8 @@
 </template>
 
 <script setup lang="ts">
-import { Close } from "@element-plus/icons-vue";
-import { onUnmounted, ref, watch } from "vue";
+import { Close } from '@element-plus/icons-vue';
+import { onUnmounted, ref, watch } from 'vue';
 
 interface Props {
   modelValue?: string;
@@ -34,13 +36,13 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: "",
+  modelValue: '',
   minWidth: 200,
   maxWidth: 600,
   defaultWidth: 313,
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(['update:modelValue']);
 
 // 响应式数据
 const drawerWidth = ref(props.defaultWidth);
@@ -65,12 +67,12 @@ function onDragStart(e: MouseEvent) {
   startWidth.value = drawerWidth.value;
 
   // 添加事件监听
-  document.addEventListener("mousemove", onDragging);
-  document.addEventListener("mouseup", onDragEnd);
+  document.addEventListener('mousemove', onDragging);
+  document.addEventListener('mouseup', onDragEnd);
 
   // 防止选中文本
-  document.body.style.userSelect = "none";
-  document.body.style.cursor = "col-resize";
+  document.body.style.userSelect = 'none';
+  document.body.style.cursor = 'col-resize';
 }
 
 // 拖拽中
@@ -95,19 +97,19 @@ function onDragEnd() {
   isDragging.value = false;
 
   // 移除事件监听
-  document.removeEventListener("mousemove", onDragging);
-  document.removeEventListener("mouseup", onDragEnd);
+  document.removeEventListener('mousemove', onDragging);
+  document.removeEventListener('mouseup', onDragEnd);
 
   // 恢复样式
-  document.body.style.userSelect = "";
-  document.body.style.cursor = "";
+  document.body.style.userSelect = '';
+  document.body.style.cursor = '';
 }
 
 // 组件卸载时清理
 onUnmounted(() => {
   if (isDragging.value) {
-    document.removeEventListener("mousemove", onDragging);
-    document.removeEventListener("mouseup", onDragEnd);
+    document.removeEventListener('mousemove', onDragging);
+    document.removeEventListener('mouseup', onDragEnd);
   }
 });
 </script>
@@ -141,7 +143,7 @@ onUnmounted(() => {
     }
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       right: 3px;
       top: 50%;

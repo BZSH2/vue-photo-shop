@@ -60,6 +60,8 @@ const navList = [
   background-color: var(--background-color-primary-regular);
   border-right: 1px solid var(--background-color-divider-regular);
   z-index: 1;
+  padding-bottom: 60px;
+  background-color: pink;
 }
 
 .nav-item {
