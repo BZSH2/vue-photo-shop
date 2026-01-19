@@ -1,31 +1,21 @@
 <template>
-  <Transition name="nav-drawer">
-    <div
-      v-if="!!modelValue"
-      class="nav-inner"
-      :style="{ width: `${drawerWidth}px` }"
-    >
-      <div v-if="modelValue" class="nav-inner-main">
-        <el-scrollbar height="100%">
-          <slot />
-        </el-scrollbar>
-      </div>
-      <!-- 拖拽手柄 -->
-      <div
-        class="nav-drag-handle"
-        @mousedown="onDragStart"
-      />
-      <div v-if="modelValue" class="nav-inner-close" @click="emit('update:modelValue', '')">
-        <el-icon class="nav-inner-close-icon">
-          <Close />
-        </el-icon>
-      </div>
+  <div
+    class="nav-inner"
+    :style="{ width: modelValue ? `${drawerWidth}px` : '0px' }"
+  >
+    <div v-if="modelValue" class="nav-inner-main">
+      <el-scrollbar height="100%">
+        <slot />
+      </el-scrollbar>
     </div>
-  </Transition>
+    <div
+      class="nav-drag-handle"
+      @mousedown="onDragStart"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { Close } from '@element-plus/icons-vue';
 import { onUnmounted, ref, watch } from 'vue';
 
 interface Props {
@@ -41,9 +31,6 @@ const props = withDefaults(defineProps<Props>(), {
   maxWidth: 600,
   defaultWidth: 313,
 });
-
-const emit = defineEmits(['update:modelValue']);
-
 // 响应式数据
 const drawerWidth = ref(props.defaultWidth);
 const isDragging = ref(false);
@@ -127,6 +114,7 @@ onUnmounted(() => {
   position: relative;
   display: flex;
   flex-direction: column;
+  transition: width 0.28s ease;
 
   .nav-drag-handle {
     position: absolute;
@@ -154,42 +142,5 @@ onUnmounted(() => {
       border-radius: 1px;
     }
   }
-
-  .nav-inner-close {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    top: 12%;
-    right: -29px;
-    background-color: var(--background-color-primary-regular);
-    border-radius: 0 30% 30% 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--background-color-divider-regular);
-    border-left: 0 none;
-    cursor: pointer;
-    z-index: 11; /* 比拖拽手柄更高 */
-
-    .nav-inner-close-icon {
-      font-size: 16px;
-      color: var(--text-color-primary-regular);
-    }
-  }
-}
-
-.nav-drawer-enter-active,
-.nav-drawer-leave-active {
-  transition: all 0.28s ease;
-}
-.nav-drawer-enter-from,
-.nav-drawer-leave-to {
-  opacity: 0;
-  width: 0 !important;
-  border-right-color: transparent;
-}
-.nav-drawer-enter-to,
-.nav-drawer-leave-from {
-  opacity: 1;
 }
 </style>

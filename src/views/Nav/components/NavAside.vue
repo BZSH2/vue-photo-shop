@@ -1,5 +1,8 @@
 <template>
-  <div class="nav-aside">
+  <div
+    class="nav-aside"
+    :style="{ paddingBottom: props.modelValue ? '60px' : '0px' }"
+  >
     <div
       v-for="(item, key) in navList"
       :key="key"
@@ -12,17 +15,16 @@
       </ElIcon>
       <span class="nav-item-title">{{ item.title }}</span>
     </div>
-    <div class="close-box">
+    <div v-if="props.modelValue" class="close-box" @click="emit('update:modelValue', '')">
       <ElIcon class="nav-item-icon">
-        1111
+        <Fold />
       </ElIcon>
-      <span class="nav-item-title">22</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { CirclePlus, CirclePlusFilled, CopyDocument, FolderOpened, Picture, PictureFilled } from '@element-plus/icons-vue';
+import { CirclePlus, CirclePlusFilled, CopyDocument, Fold, FolderOpened, Picture, PictureFilled } from '@element-plus/icons-vue';
 
 const props = defineProps({
   modelValue: {
@@ -66,11 +68,20 @@ const navList = [
   background-color: var(--background-color-primary-regular);
   border-right: 1px solid var(--background-color-divider-regular);
   z-index: 1;
-  padding-bottom: 60px;
-  background-color: pink;
   position: relative;
   .close-box {
-    // posi
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+    border-top: 1px solid var(--background-color-divider-regular);
   }
 }
 
