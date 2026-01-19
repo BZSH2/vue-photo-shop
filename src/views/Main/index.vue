@@ -1,7 +1,7 @@
 <template>
   <div class="main-container">
     <div class="image-box">
-      <img :src="`@/..${url}`" alt="" :style="imageStyle">
+      <img :src="url" alt="" :style="imageStyle">
     </div>
   </div>
 </template>
