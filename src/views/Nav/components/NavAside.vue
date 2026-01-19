@@ -12,12 +12,6 @@
       </ElIcon>
       <span class="nav-item-title">{{ item.title }}</span>
     </div>
-    <div class="nav-item">
-      <ElIcon class="nav-item-icon">
-        <component :is="(props.modelValue === item.key && item.activeIcon) ? item.activeIcon : item.icon" />
-      </ElIcon>
-      <span class="nav-item-title">{{ item.title }}</span>
-    </div>
     <div class="close-box">
       <ElIcon class="nav-item-icon">
         1111
@@ -76,7 +70,7 @@ const navList = [
   background-color: pink;
   position: relative;
   .close-box {
-    position: absolute;
+    // posi
   }
 }
 
