@@ -9,8 +9,10 @@ import { readPsd } from 'ag-psd';
 import * as fabric from 'fabric';
 import { onMounted, ref } from 'vue';
 import { useEventBus } from '@/hooks/useEventBus';
+import { getPublicPath } from '@/utils/path';
 
 const { on } = useEventBus();
+const path = getPublicPath();
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 let canvas: fabric.Canvas | null = null;
@@ -35,8 +37,10 @@ on('selectTemplate', async (item: any) => {
 
   canvas.clear();
 
+  const url = `${path}${item.psd}`;
+
   try {
-    const res = await fetch(item.psd);
+    const res = await fetch(url);
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     }
