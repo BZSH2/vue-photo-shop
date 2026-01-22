@@ -41,7 +41,11 @@ on('selectTemplate', async (item: any) => {
 
   try {
     console.log('res', url);
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      headers: {
+        Accept: 'image/vnd.adobe.photoshop, application/octet-stream',
+      },
+    });
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     }
