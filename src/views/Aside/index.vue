@@ -10,14 +10,14 @@
       </div>
     </slot>
 
-    <!-- 拖拽手柄 -->
+    <!-- 拖拽手柄
     <div
       class="resize-handle"
       @mousedown="startResize"
       @touchstart.prevent="startTouchResize"
     >
       <div class="handle-line" />
-    </div>
+    </div> -->
   </div>
 </template>
 

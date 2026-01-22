@@ -59,7 +59,9 @@ async function getFolders() {
     }
 
     if (suffix === 'psd') {
-      folderMap[folder].psd = `${basePath}/${relativePath}`;
+      const mod = modules[path] as any;
+      const url = (mod?.default || mod) as string;
+      folderMap[folder].psd = url;
     }
     if (suffixList.includes(suffix.toLocaleLowerCase())) {
       const mod = modules[path] as any;

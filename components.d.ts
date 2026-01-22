@@ -14,8 +14,10 @@ declare module 'vue' {
   export interface GlobalComponents {
     Aside: typeof import('./src/components/Layout/components/Aside.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
+    ElTooltip: typeof import('element-plus/es')['ElTooltip']
     Header: typeof import('./src/components/Layout/components/Header.vue')['default']
     Layout: typeof import('./src/components/Layout/index.vue')['default']
     Main: typeof import('./src/components/Layout/components/Main.vue')['default']
@@ -30,8 +32,10 @@ declare module 'vue' {
 declare global {
   const Aside: typeof import('./src/components/Layout/components/Aside.vue')['default']
   const ElButton: typeof import('element-plus/es')['ElButton']
+  const ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
   const ElIcon: typeof import('element-plus/es')['ElIcon']
   const ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
+  const ElTooltip: typeof import('element-plus/es')['ElTooltip']
   const Header: typeof import('./src/components/Layout/components/Header.vue')['default']
   const Layout: typeof import('./src/components/Layout/index.vue')['default']
   const Main: typeof import('./src/components/Layout/components/Main.vue')['default']
