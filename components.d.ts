@@ -13,6 +13,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Aside: typeof import('./src/components/Layout/components/Aside.vue')['default']
+    Download: typeof import('./src/components/Header/Download.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElIcon: typeof import('element-plus/es')['ElIcon']
@@ -20,6 +21,7 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     Header: typeof import('./src/components/Layout/components/Header.vue')['default']
     Layout: typeof import('./src/components/Layout/index.vue')['default']
+    Logo: typeof import('./src/components/Header/Logo.vue')['default']
     Main: typeof import('./src/components/Layout/components/Main.vue')['default']
     Nav: typeof import('./src/components/Layout/components/Nav.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
@@ -31,6 +33,7 @@ declare module 'vue' {
 // For TSX support
 declare global {
   const Aside: typeof import('./src/components/Layout/components/Aside.vue')['default']
+  const Download: typeof import('./src/components/Header/Download.vue')['default']
   const ElButton: typeof import('element-plus/es')['ElButton']
   const ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
   const ElIcon: typeof import('element-plus/es')['ElIcon']
@@ -38,6 +41,7 @@ declare global {
   const ElTooltip: typeof import('element-plus/es')['ElTooltip']
   const Header: typeof import('./src/components/Layout/components/Header.vue')['default']
   const Layout: typeof import('./src/components/Layout/index.vue')['default']
+  const Logo: typeof import('./src/components/Header/Logo.vue')['default']
   const Main: typeof import('./src/components/Layout/components/Main.vue')['default']
   const Nav: typeof import('./src/components/Layout/components/Nav.vue')['default']
   const RouterLink: typeof import('vue-router')['RouterLink']

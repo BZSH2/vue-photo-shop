@@ -22,6 +22,7 @@ const templateSize = {
 };
 
 on('selectTemplate', async (item: any) => {
+  console.log('选择模板:', item);
   if (!canvas) {
     console.error('Canvas未初始化');
     return;
@@ -73,6 +74,21 @@ on('selectTemplate', async (item: any) => {
   finally {
     // loading.value = false;
   }
+});
+
+on('download', async () => {
+  // 1. 获取DataURL
+  const dataURL = canvas?.toDataURL({
+    format: 'jpeg',
+    quality: 0.9, // 仅JPEG/WebP
+    multiplier: 2, // 缩放倍数
+  });
+
+  // 2. 下载图片
+  const link = document.createElement('a');
+  link.href = dataURL || '';
+  link.download = 'filename.png';
+  link.click();
 });
 
 /**

@@ -58,7 +58,7 @@ async function getFolders() {
       };
     }
 
-    if (suffix === 'psd') {
+    if (suffix.toLocaleLowerCase() === 'psd') {
       const mod = modules[path] as any;
       const url = (mod?.default || mod) as string;
       folderMap[folder].psd = url;
