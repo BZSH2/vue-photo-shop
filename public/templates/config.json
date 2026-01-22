@@ -1,0 +1,337 @@
+{
+  "generatedAt": "2026-01-22T06:56:34.268Z",
+  "version": "1.0.0",
+  "count": 12,
+  "templates": [
+    {
+      "id": "zpsd7377",
+      "number": 7377,
+      "name": "综合设计模板 7377",
+      "description": "多功能设计模板",
+      "image": "/templates/psd/zpsd7377/zpsd7377.jpg",
+      "psd": "/templates/psd/zpsd7377/zpsd7377.psd",
+      "width": 600,
+      "height": 750,
+      "category": "综合",
+      "tags": [
+        "通用",
+        "多功能",
+        "模板",
+        "压缩",
+        "综合",
+        "设计",
+        "可编辑"
+      ],
+      "hasReadme": true,
+      "readmePath": "/templates/psd/zpsd7377/说明.htm",
+      "createdAt": "2026-01-16",
+      "updatedAt": "2026-01-16"
+    },
+    {
+      "id": "psd40449",
+      "number": 40449,
+      "name": "海报设计模板 40449",
+      "description": "适用于产品宣传的海报设计",
+      "image": "/templates/psd/psd40449/psd40449.jpg",
+      "psd": "/templates/psd/psd40449/psd40449.psd",
+      "width": 600,
+      "height": 600,
+      "category": "海报",
+      "tags": [
+        "海报",
+        "宣传",
+        "打印",
+        "大尺寸",
+        "PSD",
+        "源文件",
+        "设计",
+        "模板"
+      ],
+      "hasReadme": false,
+      "readmePath": null,
+      "createdAt": "2026-01-16",
+      "updatedAt": "2026-01-16"
+    },
+    {
+      "id": "psd40502",
+      "number": 40502,
+      "name": "海报设计模板 40502",
+      "description": "适用于产品宣传的海报设计",
+      "image": "/templates/psd/psd40502/psd40502.JPG",
+      "psd": "/templates/psd/psd40502/psd40502.PSD",
+      "width": 600,
+      "height": 1066,
+      "category": "海报",
+      "tags": [
+        "海报",
+        "宣传",
+        "打印",
+        "大尺寸",
+        "PSD",
+        "源文件",
+        "设计",
+        "模板"
+      ],
+      "hasReadme": false,
+      "readmePath": null,
+      "createdAt": "2026-01-22",
+      "updatedAt": "2026-01-22"
+    },
+    {
+      "id": "psd40505",
+      "number": 40505,
+      "name": "海报设计模板 40505",
+      "description": "适用于产品宣传的海报设计",
+      "image": "/templates/psd/psd40505/psd40505.jpg",
+      "psd": "/templates/psd/psd40505/psd40505.psd",
+      "width": 600,
+      "height": 1066,
+      "category": "海报",
+      "tags": [
+        "海报",
+        "宣传",
+        "打印",
+        "大尺寸",
+        "PSD",
+        "源文件",
+        "设计",
+        "模板"
+      ],
+      "hasReadme": false,
+      "readmePath": null,
+      "createdAt": "2026-01-16",
+      "updatedAt": "2026-01-16"
+    },
+    {
+      "id": "psd40591",
+      "number": 40591,
+      "name": "海报设计模板 40591",
+      "description": "适用于产品宣传的海报设计",
+      "image": "/templates/psd/psd40591/psd40591.jpg",
+      "psd": "/templates/psd/psd40591/psd40591.psd",
+      "width": 600,
+      "height": 600,
+      "category": "海报",
+      "tags": [
+        "海报",
+        "宣传",
+        "打印",
+        "大尺寸",
+        "PSD",
+        "源文件",
+        "设计",
+        "模板"
+      ],
+      "hasReadme": true,
+      "readmePath": "/templates/psd/psd40591/说明.htm",
+      "createdAt": "2026-01-22",
+      "updatedAt": "2026-01-22"
+    },
+    {
+      "id": "psd40607",
+      "number": 40607,
+      "name": "海报设计模板 40607",
+      "description": "适用于产品宣传的海报设计",
+      "image": "/templates/psd/psd40607/psd40607.JPG",
+      "psd": "/templates/psd/psd40607/psd40607.psd",
+      "width": 600,
+      "height": 900,
+      "category": "海报",
+      "tags": [
+        "海报",
+        "宣传",
+        "打印",
+        "大尺寸",
+        "PSD",
+        "源文件",
+        "设计",
+        "模板"
+      ],
+      "hasReadme": false,
+      "readmePath": null,
+      "createdAt": "2026-01-22",
+      "updatedAt": "2026-01-22"
+    },
+    {
+      "id": "psd40624",
+      "number": 40624,
+      "name": "海报设计模板 40624",
+      "description": "适用于产品宣传的海报设计",
+      "image": "/templates/psd/psd40624/psd40624.JPG",
+      "psd": "/templates/psd/psd40624/psd40624.psd",
+      "width": 600,
+      "height": 900,
+      "category": "海报",
+      "tags": [
+        "海报",
+        "宣传",
+        "打印",
+        "大尺寸",
+        "PSD",
+        "源文件",
+        "设计",
+        "模板"
+      ],
+      "hasReadme": true,
+      "readmePath": "/templates/psd/psd40624/说明.htm",
+      "createdAt": "2026-01-22",
+      "updatedAt": "2026-01-22"
+    },
+    {
+      "id": "psd40627",
+      "number": 40627,
+      "name": "海报设计模板 40627",
+      "description": "适用于产品宣传的海报设计",
+      "image": "/templates/psd/psd40627/psd40627.jpg",
+      "psd": "/templates/psd/psd40627/psd40627.psd",
+      "width": 600,
+      "height": 600,
+      "category": "海报",
+      "tags": [
+        "海报",
+        "宣传",
+        "打印",
+        "大尺寸",
+        "PSD",
+        "源文件",
+        "设计",
+        "模板"
+      ],
+      "hasReadme": true,
+      "readmePath": "/templates/psd/psd40627/说明.htm",
+      "createdAt": "2026-01-22",
+      "updatedAt": "2026-01-22"
+    },
+    {
+      "id": "psd40657",
+      "number": 40657,
+      "name": "海报设计模板 40657",
+      "description": "适用于产品宣传的海报设计",
+      "image": "/templates/psd/psd40657/psd40657.jpg",
+      "psd": "/templates/psd/psd40657/psd40657.PSD",
+      "width": 600,
+      "height": 1066,
+      "category": "海报",
+      "tags": [
+        "海报",
+        "宣传",
+        "打印",
+        "大尺寸",
+        "PSD",
+        "源文件",
+        "设计",
+        "模板"
+      ],
+      "hasReadme": false,
+      "readmePath": null,
+      "createdAt": "2026-01-22",
+      "updatedAt": "2026-01-22"
+    },
+    {
+      "id": "psd40660",
+      "number": 40660,
+      "name": "海报设计模板 40660",
+      "description": "适用于产品宣传的海报设计",
+      "image": "/templates/psd/psd40660/psd40660.JPG",
+      "psd": "/templates/psd/psd40660/psd40660.psd",
+      "width": 600,
+      "height": 1066,
+      "category": "海报",
+      "tags": [
+        "海报",
+        "宣传",
+        "打印",
+        "大尺寸",
+        "PSD",
+        "源文件",
+        "设计",
+        "模板"
+      ],
+      "hasReadme": false,
+      "readmePath": null,
+      "createdAt": "2026-01-16",
+      "updatedAt": "2026-01-16"
+    },
+    {
+      "id": "psd40678",
+      "number": 40678,
+      "name": "海报设计模板 40678",
+      "description": "适用于产品宣传的海报设计",
+      "image": "/templates/psd/psd40678/psd40678.JPG",
+      "psd": "/templates/psd/psd40678/psd40678.psd",
+      "width": 600,
+      "height": 1066,
+      "category": "海报",
+      "tags": [
+        "海报",
+        "宣传",
+        "打印",
+        "大尺寸",
+        "PSD",
+        "源文件",
+        "设计",
+        "模板"
+      ],
+      "hasReadme": true,
+      "readmePath": "/templates/psd/psd40678/说明.htm",
+      "createdAt": "2026-01-16",
+      "updatedAt": "2026-01-16"
+    },
+    {
+      "id": "psd40679",
+      "number": 40679,
+      "name": "海报设计模板 40679",
+      "description": "适用于产品宣传的海报设计",
+      "image": "/templates/psd/psd40679/psd40679.jpg",
+      "psd": "/templates/psd/psd40679/psd40679.psd",
+      "width": 600,
+      "height": 600,
+      "category": "海报",
+      "tags": [
+        "海报",
+        "宣传",
+        "打印",
+        "大尺寸",
+        "PSD",
+        "源文件",
+        "设计",
+        "模板"
+      ],
+      "hasReadme": false,
+      "readmePath": null,
+      "createdAt": "2026-01-16",
+      "updatedAt": "2026-01-16"
+    }
+  ],
+  "stats": {
+    "totalTemplates": 12,
+    "byCategory": {
+      "综合": 1,
+      "海报": 11
+    },
+    "withReadme": 5,
+    "sizeRange": {
+      "minWidth": 600,
+      "maxWidth": 600,
+      "minHeight": 600,
+      "maxHeight": 1066
+    }
+  },
+  "categories": [
+    "综合",
+    "海报"
+  ],
+  "structure": {
+    "basePath": "/templates/psd/",
+    "pattern": "psdXXXXX (XXXXX为数字)",
+    "fileNaming": "目录名必须与jpg/psd文件名一致",
+    "example": {
+      "directory": "psd40449",
+      "files": [
+        "psd40449.jpg",
+        "psd40449.psd",
+        "说明.htm (可选)"
+      ]
+    }
+  }
+}

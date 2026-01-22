@@ -23,92 +23,9 @@ const { emit } = useEventBus();
 
 /** 获取本地psd文件 */
 async function getFolders() {
-  const basePath = '/src/assets/psd';
-  const suffixList = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'];
-  const modules = import.meta.glob(`/src/assets/psd/**/*`, {
-    eager: true,
-    query: '?url',
-  });
-
-  const folderMap: any = {};
-
-  const first: any[] = [];
-  const second: any[] = [];
-  let firstHeight = 0;
-  let secondHeight = 0;
-
-  // 使用 for...of 替代 forEach
-  const paths = Object.keys(modules);
-  for (const path of paths) {
-    if (!path.startsWith(`${basePath}/`))
-      continue;
-
-    const relativePath = path.slice(basePath.length);
-    const parts = relativePath.split('/');
-
-    const folder = parts[1] as string; // 文件夹
-    const fileName = parts[2] as string; // 文件名称
-    const suffix = fileName.split('.').pop() as string; // 文件后缀
-
-    if (!folderMap[folder]) {
-      folderMap[folder] = {
-        type: 'folder',
-        name: folder,
-        url: `${basePath}/${folder}`,
-      };
-    }
-
-    if (suffix.toLocaleLowerCase() === 'psd') {
-      const mod = modules[path] as any;
-      const url = (mod?.default || mod) as string;
-      folderMap[folder].psd = url;
-    }
-    if (suffixList.includes(suffix.toLocaleLowerCase())) {
-      const mod = modules[path] as any;
-      const url = (mod?.default || mod) as string;
-      folderMap[folder].image = url;
-      const { width, height } = await getImageSize(url);
-      folderMap[folder].width = width;
-      folderMap[folder].height = height;
-      const targetWidth = 100;
-      const scale = targetWidth / width;
-      const targetHeight = Math.round(height * scale);
-      folderMap[folder].targetHeight = targetHeight;
-
-      if (secondHeight >= firstHeight) {
-        first.push(folderMap[folder]);
-        firstHeight += targetHeight;
-      }
-      else {
-        second.push(folderMap[folder]);
-        secondHeight += targetHeight;
-      }
-    }
-  }
-  return [first, second];
-}
-
-/** 获取图片尺寸 */
-function getImageSize(imageUrl: string): Promise<{ width: number; height: number }> {
-  return new Promise((resolve, reject) => {
-    if (!imageUrl) {
-      reject(new Error('图片未找到'));
-      return;
-    }
-
-    const img = new Image();
-    img.onerror = () => {
-      reject(new Error('图片加载失败'));
-    };
-
-    img.onload = () => {
-      resolve({
-        width: img.width,
-        height: img.height,
-      });
-    };
-    img.src = imageUrl;
-  });
+  const res = await fetch('/templates/config.json');
+  const data = await res.json();
+  return data.templates;
 }
 
 /** 点击模板 */
@@ -116,8 +33,77 @@ function handleClick(item: any) {
   emit('selectTemplate', item);
 }
 
+// 优化算法版本：尝试交换项目来获得更平衡的布局
+function splitTemplatesOptimally(templates: any[]) {
+  const targetWidth = 100;
+
+  // 计算缩放后高度
+  const items = templates.map(item => ({
+    ...item,
+    scaledHeight: Math.round(item.height * (targetWidth / item.width)),
+  }));
+
+  // 初始分配（按高度降序）
+  const itemsSorted = [...items].sort((a, b) => b.scaledHeight - a.scaledHeight);
+
+  const column1: any[] = [];
+  const column2: any[] = [];
+  let col1Height = 0;
+  let col2Height = 0;
+
+  // 基本分配
+  for (const item of itemsSorted) {
+    if (col1Height <= col2Height) {
+      column1.push(item);
+      col1Height += item.scaledHeight;
+    }
+    else {
+      column2.push(item);
+      col2Height += item.scaledHeight;
+    }
+  }
+
+  // 计算高度差
+  let heightDiff = Math.abs(col1Height - col2Height);
+  let improved = true;
+
+  // 尝试优化：交换项目来减少高度差
+  while (improved) {
+    improved = false;
+
+    for (let i = 0; i < column1.length; i++) {
+      for (let j = 0; j < column2.length; j++) {
+        const item1 = column1[i];
+        const item2 = column2[j];
+
+        // 如果交换后能减少高度差
+        const newCol1Height = col1Height - item1.scaledHeight + item2.scaledHeight;
+        const newCol2Height = col2Height - item2.scaledHeight + item1.scaledHeight;
+        const newDiff = Math.abs(newCol1Height - newCol2Height);
+
+        if (newDiff < heightDiff) {
+          // 执行交换
+          column1[i] = item2;
+          column2[j] = item1;
+          col1Height = newCol1Height;
+          col2Height = newCol2Height;
+          heightDiff = newDiff;
+          improved = true;
+        }
+      }
+    }
+  }
+
+  // 返回结果，去除scaledHeight
+  return [
+    column1.map(({ scaledHeight, ...rest }) => rest),
+    column2.map(({ scaledHeight, ...rest }) => rest),
+  ];
+}
+
 onMounted(async () => {
-  templateList.value = await getFolders() as any[];
+  templateList.value = splitTemplatesOptimally(await getFolders() as any[]);
+  console.log(templateList.value, 'aaaaaaaaaaaaa');
 });
 </script>
 

@@ -41,8 +41,6 @@ on('selectTemplate', async (item: any) => {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     }
 
-    console.log('aaaaaaaaaaaaaaaaaaaaa', res);
-
     const arrayBuffer = await res.arrayBuffer();
     if (arrayBuffer.byteLength === 0) {
       throw new Error('PSD文件为空');
