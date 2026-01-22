@@ -41,23 +41,19 @@ on('selectTemplate', async (item: any) => {
 
   try {
     console.log('res', url);
-    const res = await fetch(url, {
-      headers: {
-        Accept: 'image/vnd.adobe.photoshop, application/octet-stream',
-      },
-    });
-    if (!res.ok) {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok)
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-    }
-
+    const ct = res.headers.get('content-type') || '';
+    if (ct.includes('text/html'))
+      throw new Error('请求返回HTML');
     const arrayBuffer = await res.arrayBuffer();
-    if (arrayBuffer.byteLength === 0) {
+    if (arrayBuffer.byteLength < 4)
       throw new Error('PSD文件为空');
-    }
-
+    const sig = String.fromCharCode(...new Uint8Array(arrayBuffer.slice(0, 4)));
+    if (sig !== '8BPS')
+      throw new Error(`不是有效的PSD（签名：${sig}）`);
     console.log('arrayBuffer', arrayBuffer);
-
-    // 解析PSD
     const psd = readPsd(arrayBuffer, {
       skipLayerImageData: false,
       skipCompositeImageData: false,
