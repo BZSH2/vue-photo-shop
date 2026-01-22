@@ -5,6 +5,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { A } from 'vue-router/dist/router-CWoNjPRp.mjs';
 import { readPsd } from 'ag-psd';
 import * as fabric from 'fabric';
 import { onMounted, ref } from 'vue';
@@ -22,6 +23,35 @@ const templateSize = {
   height: 0,
   scale: 1,
 };
+
+async function fetchRawPSD(url: string): Promise<ArrayBuffer> {
+  const response = await fetch(url);
+  const blob = await response.blob();
+
+  // 检查是否为有效的PSD
+  const arrayBuffer = await blob.arrayBuffer();
+  const header = new Uint8Array(arrayBuffer.slice(0, 4));
+  const sig = String.fromCharCode(...header);
+
+  if (sig !== '8BPS') {
+    // 尝试去除可能的BOM或前缀
+    const fullBuffer = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < fullBuffer.length - 4; i++) {
+      const testSig = String.fromCharCode(
+        fullBuffer[i]!,
+        fullBuffer[i + 1]!,
+        fullBuffer[i + 2]!,
+        fullBuffer[i + 3]!,
+      );
+      if (testSig === '8BPS') {
+        return arrayBuffer.slice(i); // 返回修正后的数据
+      }
+    }
+    throw new Error('无效的PSD文件');
+  }
+
+  return arrayBuffer;
+}
 
 on('selectTemplate', async (item: any) => {
   console.log('选择模板:', item);
@@ -41,20 +71,10 @@ on('selectTemplate', async (item: any) => {
 
   try {
     console.log('res', url);
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok)
-      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-    const ct = res.headers.get('content-type') || '';
-    if (ct.includes('text/html'))
-      throw new Error('请求返回HTML');
-    const arrayBuffer = await res.arrayBuffer();
-    if (arrayBuffer.byteLength < 4)
-      throw new Error('PSD文件为空');
-    const sig = String.fromCharCode(...new Uint8Array(arrayBuffer.slice(0, 4)));
-    if (sig !== '8BPS')
-      throw new Error(`不是有效的PSD（签名：${sig}）`);
-    console.log('arrayBuffer', arrayBuffer);
-    const psd = readPsd(arrayBuffer, {
+    const res = await fetchRawPSD(url);
+
+    console.log('arrayBuffer', res);
+    const psd = readPsd(res, {
       skipLayerImageData: false,
       skipCompositeImageData: false,
     });
