@@ -1,5 +1,5 @@
 <template>
-  <div ref="canvasContainerRef" class="canvas-container">
+  <div class="canvas-container">
     <canvas ref="canvasRef" class="canvas" />
   </div>
 </template>
@@ -13,7 +13,6 @@ import { useEventBus } from '@/hooks/useEventBus';
 const { on } = useEventBus();
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
-const canvasContainerRef = ref<HTMLDivElement | null>(null);
 let canvas: fabric.Canvas | null = null;
 // canvas容器的宽高
 const templateSize = {
@@ -52,11 +51,17 @@ on('selectTemplate', async (item: any) => {
       skipCompositeImageData: false,
     });
 
-    console.log('psd', psd);
-
     const psdElement = psd;
-    templateSize.scale = psdElement?.width && psdElement?.height ? psdElement.width > psdElement.height ? templateSize.width / psdElement.width : templateSize.height / psdElement.height : 1;
+    const widthScale = templateSize.width / psdElement.width;
+    const heightScale = templateSize.height / psdElement.height;
 
+    // 选择较小的缩放比例以确保整个PSD都能显示
+    templateSize.scale = Math.min(widthScale, heightScale);
+
+    canvas.setDimensions({
+      width: psdElement.width * templateSize.scale,
+      height: psdElement.height * templateSize.scale,
+    });
     // 处理PSD图层树
     if (psd.children) {
       await processPsdTree(psd.children);
@@ -73,28 +78,110 @@ on('selectTemplate', async (item: any) => {
 /**
  * 递归处理PSD图层树
  */
-async function processPsdTree(psd: any[]) {
+async function processPsdTree(layers: any[]) {
   if (!canvas)
     return;
 
-  for (const layer of psd) {
-    if (layer.canvas) {
-      initCanvasContainer(layer);
+  // 反转图层数组，因为PSD图层是从底部到顶部存储的
+  const reversedLayers = [...layers];
+
+  for (const layer of reversedLayers) {
+    console.log('处理图层:', layer);
+    if (layer.hidden) {
+      // '图层已隐藏，跳过
+      continue;
     }
-    if (layer.children) {
+    // 处理有canvas的图层（普通图层）
+    if (layer.canvas && layer.canvas instanceof HTMLCanvasElement) {
+      await addLayerToCanvas(layer);
+    }
+    // 处理文本图层
+    else if (layer.text) {
+      await addTextLayerToCanvas(layer);
+    }
+    // 处理子图层
+    else if (layer.children) {
       await processPsdTree(layer.children);
     }
   }
 }
 
-function initCanvasContainer(layer: any) {
-  console.log('layer', layer);
+/**
+ * 添加普通图片图层到Canvas
+ */
+async function addLayerToCanvas(layer: any) {
+  try {
+    if (!layer.canvas || !canvas)
+      return;
 
-  const imgInstance = new fabric.FabricImage(layer.canvas, {
-    scaleX: templateSize.scale,
-    scaleY: templateSize.scale,
-  });
-  canvas?.add(imgInstance);
+    const layerLeft = layer.left || 0;
+    const layerTop = layer.top || 0;
+    const layerWidth = layer.width || layer.canvas.width || 0;
+    const layerHeight = layer.height || layer.canvas.height || 0;
+    // 使用Promise包装图片加载
+    const imgInstance = new fabric.Image(layer.canvas, {
+      left: layerLeft * templateSize.scale,
+      top: layerTop * templateSize.scale,
+      scaleX: templateSize.scale,
+      scaleY: templateSize.scale,
+      originX: 'left',
+      originY: 'top',
+      opacity: layer.opacity !== undefined ? layer.opacity * 255 : 1, // PSD中透明度是0-255
+    });
+
+    // 设置图层名称以便调试
+    if (layer.name) {
+      imgInstance.set('name', layer.name);
+      imgInstance.set('data', {
+        originalLeft: layerLeft,
+        originalTop: layerTop,
+        originalWidth: layerWidth,
+        originalHeight: layerHeight,
+      });
+    }
+
+    canvas.add(imgInstance);
+  }
+  catch (error) {
+    console.error(`添加图层失败 "${layer.name || '未命名图层'}":`, error);
+  }
+}
+
+/**
+ * 添加文本图层到Canvas
+ */
+async function addTextLayerToCanvas(layer: any) {
+  try {
+    if (!layer.text || !canvas)
+      return;
+
+    const layerLeft = layer.left || 0;
+    const layerTop = layer.top || 0;
+
+    const text = new fabric.Text(layer.text.text || layer.text.value || '', {
+      left: layerLeft * templateSize.scale,
+      top: layerTop * templateSize.scale,
+      scaleX: templateSize.scale,
+      scaleY: templateSize.scale,
+      originX: 'left',
+      originY: 'top',
+      selectable: false,
+      evented: false,
+      fontFamily: layer.text.style?.font?.name || 'Arial',
+      fontSize: (layer.text.style?.font?.sizes?.[0] || 12) * templateSize.scale,
+      fill: layer.text.style?.fill?.color || '#000000',
+      opacity: layer.opacity !== undefined ? layer.opacity * 255 : 1,
+    });
+
+    if (layer.name) {
+      text.set('name', layer.name);
+    }
+
+    canvas.add(text);
+  }
+  catch (error) {
+    console.error(`添加文本图层失败 "${layer.name || '未命名文本图层'}":`, error);
+  }
 }
 
 function initCanvas() {
