@@ -22,7 +22,7 @@ import { getPublicPath } from '@/utils/path';
 const templateList = ref<any[]>([]);
 const { emit } = useEventBus();
 const path = getPublicPath();
-const configUrl = `${path}templates/config.json`;
+const configUrl = `${path}/templates/config.json`;
 
 /** 获取本地psd文件 */
 async function getFolders() {

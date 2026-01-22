@@ -37,10 +37,11 @@ on('selectTemplate', async (item: any) => {
 
   canvas.clear();
 
-  // const url = `${path}${item.psd}`;
+  const url = `${path}${item.psd}`;
 
   try {
-    const res = await fetch(item.psd);
+    console.log('res', url);
+    const res = await fetch(url);
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     }
