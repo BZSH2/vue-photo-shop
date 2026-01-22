@@ -30,6 +30,7 @@ async function fetchRawPSD(url: string): Promise<ArrayBuffer> {
 
   // 检查是否为有效的PSD
   const arrayBuffer = await blob.arrayBuffer();
+  console.log(arrayBuffer);
   const header = new Uint8Array(arrayBuffer.slice(0, 4));
   const sig = String.fromCharCode(...header);
 
