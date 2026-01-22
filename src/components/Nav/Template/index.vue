@@ -17,13 +17,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useEventBus } from '@/hooks/useEventBus';
+import { getPublicPath } from '@/utils/path';
 
 const templateList = ref<any[]>([]);
 const { emit } = useEventBus();
+const configUrl = `${getPublicPath()}templates/config.json`;
 
 /** 获取本地psd文件 */
 async function getFolders() {
-  const res = await fetch('/templates/config.json');
+  const res = await fetch(configUrl);
   const data = await res.json();
   return data.templates;
 }
