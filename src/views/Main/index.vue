@@ -42,7 +42,7 @@ on('selectTemplate', async (item: any) => {
 
   try {
     console.log('res', url);
-    const res = await fetch('https://bzsh2.github.io/vue-photo-shop/templates/psd/zpsd7377/zpsd7377.psd', {
+    const res = await fetch('https://raw.githubusercontent.com/BZSH2/vue-photo-shop/gh-pages/templates/psd/zpsd7377/zpsd7377.psd', {
       headers: {
         Accept: 'application/vnd.github.v3.raw', // 重要：获取原始文件
       },
