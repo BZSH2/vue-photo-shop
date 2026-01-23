@@ -34,7 +34,7 @@ on('selectTemplate', async (item: any) => {
 
   // if (!item?.psd) {
   //   console.error('缺少PSD地址');
-  //   return;
+  //   return;11
   // }
 
   // 2. 创建并加载 ZIP
