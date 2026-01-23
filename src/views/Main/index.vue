@@ -39,10 +39,14 @@ on('selectTemplate', async (item: any) => {
   canvas.clear();
 
   const url = `${path}${item.psd}`;
+  const txtUrl = `${path}${item.arrayBuffer.path}`;
 
   try {
     console.log('res', url);
     const res = await fetch(url);
+    const txt = await fetch(txtUrl);
+
+    console.log('txt', txt);
 
     const arrayBuffer = await res.arrayBuffer();
 

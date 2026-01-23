@@ -11,7 +11,73 @@ const __dirname = path.dirname(__filename);
 const CONFIG = {
   inputDir: path.join(__dirname, 'public/templates/psd'),
   outputFile: path.join(__dirname, 'public/templates/config.json'),
+  psdBaseUrl: 'https://your-cdn.com/psd-files', // 修改为你的实际CDN地址
+  arrayBufferDir: path.join(__dirname, 'public/templates/arraybuffers'),
 };
+
+/**
+ * 将PSD文件转换为ArrayBuffer并保存为txt文件
+ */
+async function convertPsdToArrayBuffer(psdFilePath, outputFileName) {
+  try {
+    console.log(`  🔄 转换PSD文件: ${path.basename(psdFilePath)}`);
+
+    // 读取PSD文件为Buffer
+    const psdBuffer = fs.readFileSync(psdFilePath);
+
+    // 将Buffer转换为ArrayBuffer
+    const arrayBuffer = psdBuffer.buffer.slice(
+      psdBuffer.byteOffset,
+      psdBuffer.byteOffset + psdBuffer.byteLength,
+    );
+
+    // 将ArrayBuffer转换为Base64字符串（便于存储为txt）
+    const base64String = Buffer.from(arrayBuffer).toString('base64');
+
+    // 确保输出目录存在
+    if (!fs.existsSync(CONFIG.arrayBufferDir)) {
+      fs.mkdirSync(CONFIG.arrayBufferDir, { recursive: true });
+    }
+
+    // 保存为txt文件
+    const txtFilePath = path.join(CONFIG.arrayBufferDir, `${outputFileName}.txt`);
+    fs.writeFileSync(txtFilePath, base64String, 'utf8');
+
+    console.log(`  ✅ PSD转换完成: ${outputFileName}.txt (${(psdBuffer.length / 1024 / 1024).toFixed(2)} MB)`);
+
+    return {
+      fileName: `${outputFileName}.txt`,
+      size: psdBuffer.length,
+      arrayBufferSize: arrayBuffer.byteLength,
+      path: `/templates/arraybuffers/${outputFileName}.txt`,
+    };
+  }
+  catch (error) {
+    console.log(`  ❌ PSD转换失败: ${error.message}`);
+    return null;
+  }
+}
+
+/**
+ * 生成PSD文件的元数据信息
+ */
+function generatePsdMetadata(psdFilePath, arrayBufferInfo) {
+  const stats = fs.statSync(psdFilePath);
+  const fileSizeMB = (stats.size / 1024 / 1024).toFixed(2);
+
+  return {
+    originalFileName: path.basename(psdFilePath),
+    arrayBufferFile: arrayBufferInfo.fileName,
+    fileSize: stats.size,
+    fileSizeMB: Number.parseFloat(fileSizeMB),
+    lastModified: stats.mtime.toISOString(),
+    downloadUrl: `${CONFIG.psdBaseUrl}/${path.basename(psdFilePath)}`, // 完整下载URL
+    arrayBufferPath: arrayBufferInfo.path,
+    format: 'PSD',
+    hasArrayBuffer: true,
+    conversionDate: new Date().toISOString(),
+  };
+}
 
 /**
  * 从目录名提取模板信息
@@ -61,6 +127,8 @@ function extractInfoFromDirName(dirName) {
 async function scanPsdDirectories() {
   console.log('📁 开始扫描PSD目录...');
   console.log(`📁 扫描路径: ${CONFIG.inputDir}`);
+  console.log(`📁 PSD Base URL: ${CONFIG.psdBaseUrl}`);
+  console.log(`📁 ArrayBuffer输出目录: ${CONFIG.arrayBufferDir}\n`);
 
   // 检查目录是否存在
   if (!fs.existsSync(CONFIG.inputDir)) {
@@ -153,6 +221,18 @@ async function processPsdDirectory(dirName) {
       console.log(`  ⚠️  无法获取图片尺寸: ${error.message}`);
     }
 
+    // 转换PSD文件为ArrayBuffer
+    const psdFilePath = path.join(dirPath, psdFile);
+    const arrayBufferInfo = await convertPsdToArrayBuffer(psdFilePath, dirName);
+
+    if (!arrayBufferInfo) {
+      console.log(`  ❌ PSD文件转换失败，跳过目录: ${dirName}`);
+      return null;
+    }
+
+    // 生成PSD元数据
+    const psdMetadata = generatePsdMetadata(psdFilePath, arrayBufferInfo);
+
     const template = {
       id: info.id,
       number: info.number,
@@ -160,6 +240,14 @@ async function processPsdDirectory(dirName) {
       description: info.description,
       image: `/templates/psd/${dirName}/${previewFile}`,
       psd: `/templates/psd/${dirName}/${psdFile}`,
+      psdMetadata,
+      arrayBuffer: {
+        fileName: arrayBufferInfo.fileName,
+        path: arrayBufferInfo.path,
+        size: arrayBufferInfo.size,
+        downloadUrl: psdMetadata.downloadUrl,
+        available: true,
+      },
       width: dimensions.width,
       height: dimensions.height,
       category: info.category,
@@ -168,12 +256,15 @@ async function processPsdDirectory(dirName) {
       readmePath: readmeFile ? `/templates/psd/${dirName}/${readmeFile}` : null,
       createdAt: getFileCreatedTime(dirPath),
       updatedAt: getFileModifiedTime(dirPath),
+      psdBaseUrl: CONFIG.psdBaseUrl, // 添加psdBase地址
     };
 
     console.log(`  ✅ 成功添加: ${info.name}`);
     console.log(`     图片: ${previewFile} (${dimensions.width}x${dimensions.height})`);
-    console.log(`     PSD: ${psdFile}`);
+    console.log(`     PSD: ${psdFile} (${psdMetadata.fileSizeMB} MB)`);
+    console.log(`     ArrayBuffer: ${arrayBufferInfo.fileName}`);
     console.log(`     分类: ${info.category}`);
+    console.log(`     下载地址: ${psdMetadata.downloadUrl}`);
 
     return template;
   }
@@ -340,6 +431,8 @@ async function generateConfig(templates) {
         version: '1.0.0',
         count: 0,
         templates: [],
+        psdBaseUrl: CONFIG.psdBaseUrl,
+        arrayBufferDir: CONFIG.arrayBufferDir,
         directoryStructure: {
           base: '/templates/psd/',
           pattern: 'psdXXXXX 或 zpsdXXXXX',
@@ -357,36 +450,54 @@ async function generateConfig(templates) {
       return;
     }
 
-    // 统计分类
+    // 统计分类和ArrayBuffer信息
     const categories = {};
+    let totalArrayBufferSize = 0;
+
     templates.forEach((template) => {
       categories[template.category] = (categories[template.category] || 0) + 1;
+      if (template.arrayBuffer) {
+        totalArrayBufferSize += template.arrayBuffer.size;
+      }
     });
 
     const config = {
       generatedAt: new Date().toISOString(),
       version: '1.0.0',
       count: templates.length,
+      psdBaseUrl: CONFIG.psdBaseUrl,
+      arrayBufferInfo: {
+        totalFiles: templates.filter(t => t.arrayBuffer?.available).length,
+        totalSize: totalArrayBufferSize,
+        totalSizeMB: (totalArrayBufferSize / 1024 / 1024).toFixed(2),
+        directory: CONFIG.arrayBufferDir.replace(__dirname, ''),
+      },
       templates,
       stats: {
         totalTemplates: templates.length,
         byCategory: categories,
         withReadme: templates.filter(t => t.hasReadme).length,
+        withArrayBuffer: templates.filter(t => t.arrayBuffer?.available).length,
         sizeRange: {
           minWidth: Math.min(...templates.map(t => t.width)),
           maxWidth: Math.max(...templates.map(t => t.width)),
           minHeight: Math.min(...templates.map(t => t.height)),
           maxHeight: Math.max(...templates.map(t => t.height)),
         },
+        fileSizeRange: {
+          minMB: Math.min(...templates.map(t => t.psdMetadata?.fileSizeMB || 0)),
+          maxMB: Math.max(...templates.map(t => t.psdMetadata?.fileSizeMB || 0)),
+        },
       },
       categories: Object.keys(categories),
       structure: {
         basePath: '/templates/psd/',
+        arrayBufferPath: '/templates/arraybuffers/',
         pattern: 'psdXXXXX (XXXXX为数字)',
         fileNaming: '目录名必须与jpg/psd文件名一致',
         example: {
           directory: 'psd40449',
-          files: ['psd40449.jpg', 'psd40449.psd', '说明.htm (可选)'],
+          files: ['psd40449.jpg', 'psd40449.psd', 'psd40449.txt (ArrayBuffer)', '说明.htm (可选)'],
         },
       },
     };
@@ -396,8 +507,11 @@ async function generateConfig(templates) {
 
     console.log('\n🎉 配置文件生成完成！');
     console.log(`📁 输出文件: ${CONFIG.outputFile}`);
+    console.log(`🌐 PSD Base URL: ${config.psdBaseUrl}`);
     console.log(`📊 统计信息:`);
     console.log(`   模板总数: ${config.count}`);
+    console.log(`   ArrayBuffer文件: ${config.arrayBufferInfo.totalFiles}`);
+    console.log(`   ArrayBuffer总大小: ${config.arrayBufferInfo.totalSizeMB} MB`);
     console.log(`   分类统计: ${JSON.stringify(categories, null, 2)}`);
     console.log(`   带说明文件: ${config.stats.withReadme}`);
     console.log(`   尺寸范围: ${config.stats.sizeRange.minWidth}x${config.stats.sizeRange.minHeight} 到 ${config.stats.sizeRange.maxWidth}x${config.stats.sizeRange.maxHeight}`);
@@ -407,8 +521,10 @@ async function generateConfig(templates) {
       console.log(`  ${i + 1}. ${t.name} (${t.id})`);
       console.log(`     分类: ${t.category}`);
       console.log(`     图片: ${path.basename(t.image)}`);
-      console.log(`     PSD: ${path.basename(t.psd)}`);
+      console.log(`     PSD: ${path.basename(t.psd)} (${t.psdMetadata.fileSizeMB} MB)`);
+      console.log(`     ArrayBuffer: ${t.arrayBuffer.fileName}`);
       console.log(`     尺寸: ${t.width}x${t.height}`);
+      console.log(`     下载地址: ${t.psdMetadata.downloadUrl}`);
       console.log('');
     });
   }
@@ -423,22 +539,29 @@ async function generateConfig(templates) {
  */
 async function main() {
   console.log('🚀 开始生成PSD模板配置...\n');
+  console.log(`🌐 PSD Base URL: ${CONFIG.psdBaseUrl}`);
+  console.log(`📁 ArrayBuffer输出目录: ${CONFIG.arrayBufferDir}\n`);
 
   try {
     const templates = await scanPsdDirectories();
     await generateConfig(templates);
 
     console.log('\n✅ 配置生成完成！');
-    console.log('\n📁 目录结构要求:');
-    console.log('  public/templates/psd/');
-    console.log('  ├── psd40449/');
-    console.log('  │   ├── psd40449.jpg');
-    console.log('  │   ├── psd40449.psd');
-    console.log('  │   └── 说明.htm (可选)');
-    console.log('  ├── psd40502/');
-    console.log('  │   ├── psd40502.JPG');
-    console.log('  │   └── psd40502.PSD');
-    console.log('  └── ...');
+    console.log('\n📁 目录结构:');
+    console.log('  public/templates/');
+    console.log('  ├── psd/');
+    console.log('  │   ├── psd40449/');
+    console.log('  │   │   ├── psd40449.jpg');
+    console.log('  │   │   ├── psd40449.psd');
+    console.log('  │   │   └── 说明.htm (可选)');
+    console.log('  ├── arraybuffers/');
+    console.log('  │   ├── psd40449.txt (ArrayBuffer文件)');
+    console.log('  │   └── ...');
+    console.log('  └── config.json');
+    console.log('\n💡 使用说明:');
+    console.log('  - ArrayBuffer文件可用于前端直接加载PSD');
+    console.log('  - 原始PSD文件可通过 psdBaseUrl + 文件名 下载');
+    console.log('  - 预览图直接通过相对路径访问');
   }
   catch (error) {
     console.error('❌ 生成失败:', error);
