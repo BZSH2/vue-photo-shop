@@ -10,25 +10,10 @@ import axios from 'axios';
 import * as fabric from 'fabric';
 import { onMounted, ref } from 'vue';
 import { useEventBus } from '@/hooks/useEventBus';
+import { getPublicPath } from '@/utils/path';
 
 const { on } = useEventBus();
-
-function resolvePsdUrl(input?: string): string {
-  if (!input)
-    return '';
-  if (/^(https?:|data:|blob:)/.test(input))
-    return input;
-  // 规范化 BASE_URL
-  const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-  // 以 /assets 开头：补上 base 前缀
-  if (input.startsWith('/assets/'))
-    return `${base}${input}`;
-  // 以 assets 开头：补上 base 与斜杠
-  if (input.startsWith('assets/'))
-    return `${base}/${input}`;
-  // 其他情况：原样返回
-  return input;
-}
+const path = getPublicPath();
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 let canvas: fabric.Canvas | null = null;
@@ -53,7 +38,7 @@ on('selectTemplate', async (item: any) => {
 
   canvas.clear();
 
-  const url = resolvePsdUrl(item.psd);
+  const url = `${path}${item.psd}`;
 
   try {
     console.log('res', url);
