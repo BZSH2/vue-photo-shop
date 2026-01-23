@@ -39,32 +39,14 @@ on('selectTemplate', async (item: any) => {
   canvas.clear();
 
   const url = `${path}${item.psd}`;
-  const txtUrl = `${path}${item.arrayBuffer.path}`;
 
   try {
     console.log('res', url);
-    const res = await fetch(url);
-    const txt = await fetch(txtUrl);
-
-    console.log('txt', txt);
+    const res = await fetch('https://bzsh2.github.io/vue-photo-shop/templates/psd/zpsd7377/zpsd7377.psd');
 
     const arrayBuffer = await res.arrayBuffer();
 
-    // 检查文件前几个字符是否是HTML
-    const header = new Uint8Array(arrayBuffer);
-    const text = new TextDecoder().decode(header);
-    console.log('文件开头:', text);
-
     console.log('arrayBuffer', res);
-    const response = await axios.get(url, {
-      responseType: 'arraybuffer',
-      transformResponse: [data => data], // 禁用默认转换
-      decompress: false, // 禁用自动解压
-      headers: {
-        'Accept-Encoding': 'identity', // 请求不压缩
-      },
-    });
-    console.log('aaaaaaaaaaaaaaaaaa', response);
     const psd = readPsd(arrayBuffer, {
       skipLayerImageData: false,
       skipCompositeImageData: false,
