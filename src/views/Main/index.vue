@@ -46,7 +46,7 @@ on('selectTemplate', async (item: any) => {
 
     const arrayBuffer = await res.arrayBuffer();
 
-    console.log('arrayBuffer', res);
+    console.log('arrayBuffer', res, arrayBuffer);
     const psd = readPsd(arrayBuffer, {
       skipLayerImageData: false,
       skipCompositeImageData: false,
