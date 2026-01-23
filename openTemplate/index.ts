@@ -234,7 +234,7 @@ async function scanAndProcessPsdFiles(): Promise<Template[]> {
     console.log(`\n🔧 [${i + 1}/${psdFiles.length}] 处理: ${file}`);
 
     try {
-      const template = await processPsdFile(path.join(CONFIG.inputDir, file));
+      const template = await processPsdFile(path.join(CONFIG.inputDir, file || ''));
       if (template) {
         templates.push(template);
       }
