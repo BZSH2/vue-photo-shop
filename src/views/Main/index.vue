@@ -8,6 +8,7 @@
 import { readPsd } from 'ag-psd';
 import axios from 'axios';
 import * as fabric from 'fabric';
+import JSZip from 'jszip';
 import { onMounted, ref } from 'vue';
 import { useEventBus } from '@/hooks/useEventBus';
 import { getPublicPath } from '@/utils/path';
@@ -35,6 +36,35 @@ on('selectTemplate', async (item: any) => {
     console.error('缺少PSD地址');
     return;
   }
+
+  // 2. 创建并加载 ZIP
+  const zipUrl = `${path}/templates/psd40449.zip`;
+  const res1 = await fetch(zipUrl);
+  const zip = new JSZip();
+  const zipData = await zip.loadAsync(res1.arrayBuffer());
+
+  console.log('aaaaaaaaaaaaaaaaaaa', zipData);
+  // 2. 查找 ZIP 中的 PSD 文件
+  const psdFiles = Object.keys(zipData.files).filter(name => name.endsWith('.psd'));
+
+  if (psdFiles.length === 0) {
+    console.error('ZIP 中没有找到 PSD 文件');
+    return;
+  }
+
+  // 3. 获取第一个 PSD 文件
+  const psdFileName = psdFiles[0];
+  const psdFile = zipData.file(psdFileName || '');
+
+  if (!psdFile) {
+    console.error('无法获取 PSD 文件');
+    return;
+  }
+
+  // 4. 将 PSD 文件转换为 ArrayBuffer
+  const psdArrayBuffer = await psdFile.async('arraybuffer');
+
+  console.log('PSD 文件 ArrayBuffer:', psdArrayBuffer);
 
   canvas.clear();
 
