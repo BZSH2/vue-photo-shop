@@ -8,8 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:templates && run-p type-check \"build-only {@}\" --",
-    "build:templates": "node build-templates.js",
+    "build": "npm run openTemplate && run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest",
     "test:e2e": "playwright test",
@@ -21,7 +20,8 @@
     "lint:fix": "eslint . --fix",
     "lint:stylelint": "stylelint  \"**/*.{css,scss,less,vue,html}\" --fix",
     "lint:lint-staged": "lint-staged",
-    "cz": "git pull && git add -A && git-cz"
+    "cz": "git pull && git add -A && git-cz",
+    "openTemplate": "esno openTemplate/index.ts"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
@@ -55,6 +55,7 @@
     "eslint-plugin-format": "^1.2.0",
     "eslint-plugin-playwright": "^2.4.0",
     "eslint-plugin-vue": "~10.6.2",
+    "esno": "^4.8.0",
     "git-cz": "^4.9.0",
     "husky": "^8.0.0",
     "jiti": "^2.6.1",
@@ -67,6 +68,7 @@
     "postcss-less": "^6.0.0",
     "prettier": "3.7.4",
     "sass-embedded": "^1.97.2",
+    "sharp": "^0.34.5",
     "stylelint": "^16.26.1",
     "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-recess-order": "^7.4.0",

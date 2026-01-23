@@ -32,18 +32,16 @@ on('selectTemplate', async (item: any) => {
     return;
   }
 
-  if (!item?.psd) {
-    console.error('缺少PSD地址');
-    return;
-  }
+  // if (!item?.psd) {
+  //   console.error('缺少PSD地址');
+  //   return;
+  // }
 
   // 2. 创建并加载 ZIP
-  const zipUrl = `${path}/templates/psd40449.zip`;
-  const res1 = await fetch(zipUrl);
+  const zipUrl = `${path}${item.downloadUrl}`;
+  const res = await fetch(zipUrl);
   const zip = new JSZip();
-  const zipData = await zip.loadAsync(res1.arrayBuffer());
-
-  console.log('aaaaaaaaaaaaaaaaaaa', zipData);
+  const zipData = await zip.loadAsync(res.arrayBuffer());
   // 2. 查找 ZIP 中的 PSD 文件
   const psdFiles = Object.keys(zipData.files).filter(name => name.endsWith('.psd'));
 
@@ -68,16 +66,16 @@ on('selectTemplate', async (item: any) => {
 
   canvas.clear();
 
-  const url = `${path}${item.psd}`;
+  // const url = `${path}${item.psd}`;
 
   try {
-    console.log('res', url);
-    const res = await fetch(url);
+    // console.log('res', url);
+    // const res = await fetch(url);
 
-    const arrayBuffer = await res.arrayBuffer();
+    // const arrayBuffer = await res.arrayBuffer();
 
-    console.log('arrayBuffer', res, arrayBuffer);
-    const psd = readPsd(arrayBuffer, {
+    // console.log('arrayBuffer', res, arrayBuffer);
+    const psd = readPsd(psdArrayBuffer, {
       skipLayerImageData: false,
       skipCompositeImageData: false,
     });
