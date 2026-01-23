@@ -48,9 +48,11 @@ on('selectTemplate', async (item: any) => {
 
     console.log('arrayBuffer', res);
     const response = await axios.get(url, {
-      responseType: 'arraybuffer', // 重要：必须指定为arraybuffer
+      responseType: 'arraybuffer',
+      transformResponse: [data => data], // 禁用默认转换
+      decompress: false, // 禁用自动解压
       headers: {
-        'Content-Type': 'application/octet-stream',
+        'Accept-Encoding': 'identity', // 请求不压缩
       },
     });
     console.log('aaaaaaaaaaaaaaaaaa', response);

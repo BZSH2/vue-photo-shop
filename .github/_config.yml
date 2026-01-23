@@ -1,0 +1,3 @@
+# 在GitHub Pages仓库根目录创建 _config.yml
+mime_types:
+  .psd: image/vnd.adobe.photoshop
