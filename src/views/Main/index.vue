@@ -46,6 +46,11 @@ on('selectTemplate', async (item: any) => {
 
     const arrayBuffer = await res.arrayBuffer();
 
+    // 检查文件前几个字符是否是HTML
+    const header = new Uint8Array(arrayBuffer);
+    const text = new TextDecoder().decode(header);
+    console.log('文件开头:', text);
+
     console.log('arrayBuffer', res);
     const response = await axios.get(url, {
       responseType: 'arraybuffer',
