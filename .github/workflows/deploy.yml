@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest # 使用 Ubuntu 最新版本运行工作流
 
     steps:
+      - name: Checkout code with LFS
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
       - name: Checkout code
         uses: actions/checkout@v4 # 拉取代码
 
