@@ -35,9 +35,6 @@ importers:
       pinia:
         specifier: ^3.0.4
         version: 3.0.4(typescript@5.9.3)(vue@3.5.26(typescript@5.9.3))
-      unrar:
-        specifier: ^0.2.0
-        version: 0.2.0
       vue:
         specifier: ^3.5.26
         version: 3.5.26(typescript@5.9.3)
@@ -3946,10 +3943,6 @@ packages:
   unplugin@2.3.11:
     resolution: {integrity: sha512-5uKD0nqiYVzlmCRs01Fhs2BdkEgBS3SAVP6ndrBsuK42iC2+JHyxM05Rm9G8+5mkmRtzMZGY8Ct5+mliZxU/Ww==}
     engines: {node: '>=18.12.0'}
-
-  unrar@0.2.0:
-    resolution: {integrity: sha512-pd0KeKRPiq8+48lxMU7V7QKBFqpSGQVrvlxpTwTFGnvMEJX26/IAPPAmp3zK8lqhshvC3GVQrOdIYldXKczXkw==}
-    engines: {node: '>= 0.10.21'}
 
   update-browserslist-db@1.2.3:
     resolution: {integrity: sha512-Js0m9cx+qOgDxo0eMiFGEueWztz+d4+M3rGlmKPT+T4IS/jP4ylw3Nwpu6cpTTP8R1MAC1kF4VbdLt3ARf209w==}
@@ -8368,8 +8361,6 @@ snapshots:
       acorn: 8.15.0
       picomatch: 4.0.3
       webpack-virtual-modules: 0.6.2
-
-  unrar@0.2.0: {}
 
   update-browserslist-db@1.2.3(browserslist@4.28.1):
     dependencies:
