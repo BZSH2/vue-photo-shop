@@ -102,43 +102,7 @@ async function generatePreview(
     ? `${nameWithoutExt.substring(0, 20)}...`
     : nameWithoutExt;
 
-  const svg = `
-    <svg width="${CONFIG.previewWidth}" height="${CONFIG.previewHeight}" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:${color.bg};stop-opacity:1" />
-          <stop offset="100%" style="stop-color:${color.card};stop-opacity:1" />
-        </linearGradient>
-      </defs>
-
-      <rect width="100%" height="100%" fill="url(#grad1)"/>
-      <rect x="40" y="40" width="720" height="520" rx="12" fill="white"/>
-
-      <!-- PSD图标 -->
-      <rect x="350" y="120" width="100" height="100" rx="8" fill="${color.accent}"/>
-      <text x="400" y="175" font-family="Arial, sans-serif" font-size="48"
-            text-anchor="middle" fill="white" font-weight="bold">PSD</text>
-
-      <!-- 文件名 -->
-      <text x="400" y="260" font-family="Arial, sans-serif" font-size="24"
-            text-anchor="middle" fill="${color.text}" font-weight="bold">
-        ${displayName}
-      </text>
-
-      <!-- 文件类型 -->
-      <text x="400" y="310" font-family="Arial, sans-serif" font-size="16"
-            text-anchor="middle" fill="#6c757d">
-        Photoshop Template
-      </text>
-
-      <!-- 按钮 -->
-      <g transform="translate(400, 450)">
-        <rect x="-80" y="-20" width="160" height="40" rx="20" fill="${color.accent}"/>
-        <text font-family="Arial, sans-serif" font-size="16" text-anchor="middle"
-              fill="white" dy="5" font-weight="bold">Download</text>
-      </g>
-    </svg>
-  `;
+  const svg = ``;
 
   await sharp(Buffer.from(svg))
     .jpeg({ quality: CONFIG.imageQuality, mozjpeg: true })
