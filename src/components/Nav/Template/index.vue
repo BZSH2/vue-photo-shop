@@ -7,7 +7,7 @@
         :class="{ 'template-item-first': key === 0, 'template-item-second': key === 1 }"
         @click="handleClick(item)"
       >
-        <img :src="`${path}${item.image}`" class="template-image">
+        <img :src="item.image" class="template-image">
         <span class="template-name">{{ item.name }}</span>
       </div>
     </div>

@@ -26,6 +26,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
     "ag-psd": "^29.0.0",
+    "axios": "^1.13.2",
     "element-plus": "^2.13.0",
     "fabric": "^7.1.0",
     "mitt": "^3.0.1",

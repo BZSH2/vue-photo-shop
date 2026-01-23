@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { A } from 'vue-router/dist/router-CWoNjPRp.mjs';
 import { readPsd } from 'ag-psd';
+import axios from 'axios';
 import * as fabric from 'fabric';
 import { onMounted, ref } from 'vue';
 import { useEventBus } from '@/hooks/useEventBus';
@@ -23,36 +23,6 @@ const templateSize = {
   height: 0,
   scale: 1,
 };
-
-async function fetchRawPSD(url: string): Promise<ArrayBuffer> {
-  const response = await fetch(url);
-  const blob = await response.blob();
-
-  // 检查是否为有效的PSD
-  const arrayBuffer = await blob.arrayBuffer();
-  console.log(arrayBuffer);
-  const header = new Uint8Array(arrayBuffer.slice(0, 4));
-  const sig = String.fromCharCode(...header);
-
-  if (sig !== '8BPS') {
-    // 尝试去除可能的BOM或前缀
-    const fullBuffer = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < fullBuffer.length - 4; i++) {
-      const testSig = String.fromCharCode(
-        fullBuffer[i]!,
-        fullBuffer[i + 1]!,
-        fullBuffer[i + 2]!,
-        fullBuffer[i + 3]!,
-      );
-      if (testSig === '8BPS') {
-        return arrayBuffer.slice(i); // 返回修正后的数据
-      }
-    }
-    throw new Error('无效的PSD文件');
-  }
-
-  return arrayBuffer;
-}
 
 on('selectTemplate', async (item: any) => {
   console.log('选择模板:', item);
@@ -72,10 +42,19 @@ on('selectTemplate', async (item: any) => {
 
   try {
     console.log('res', url);
-    const res = await fetchRawPSD(url);
+    const res = await fetch(url);
+
+    const arrayBuffer = await res.arrayBuffer();
 
     console.log('arrayBuffer', res);
-    const psd = readPsd(res, {
+    const response = await axios.get(url, {
+      responseType: 'arraybuffer', // 重要：必须指定为arraybuffer
+      headers: {
+        'Content-Type': 'application/octet-stream',
+      },
+    });
+    console.log('aaaaaaaaaaaaaaaaaa', response);
+    const psd = readPsd(arrayBuffer, {
       skipLayerImageData: false,
       skipCompositeImageData: false,
     });
