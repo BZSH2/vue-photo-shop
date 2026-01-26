@@ -13,12 +13,11 @@ import process from 'node:process';
 import { createCanvas } from '@napi-rs/canvas';
 import { initializeCanvas, readPsd } from 'ag-psd';
 import JSZip from 'jszip';
-import minimist from 'minimist';
 
 // ES模块中获取 __filename
 const __filename = '';
 const __dirname = path.dirname(__filename);
-const args = minimist(process.argv.slice(2));
+const argv = process.argv;
 
 // 关键：在使用 ag-psd 前初始化 Canvas
 initializeCanvas(createCanvas as any);
@@ -221,9 +220,6 @@ async function scanAndProcessPsdFiles(): Promise<OpenTemplate.Template[]> {
  */
 async function main(): Promise<void> {
   try {
-    if (args.dev && !fs.existsSync(CONFIG.outputDir)) {
-      return;
-    }
     cleanupOldFiles();
     const templates = await scanAndProcessPsdFiles();
 
