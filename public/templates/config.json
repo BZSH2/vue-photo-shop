@@ -4,123 +4,99 @@
   "templates": [
     {
       "name": "psd40449",
-      "preview": "/templates/psd/psd40449/psd40449.jpg",
-      "zipFile": "/templates/psd/psd40449/psd40449.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "psd40449.psd",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\psd40449.psd",
+      "zipFile": "public\\templates\\psd\\psd40449\\psd40449.zip",
+      "width": 2480,
+      "height": 3508,
+      "image": "public\\templates\\psd\\psd40449\\psd40449.png"
     },
     {
       "name": "psd40502",
-      "preview": "/templates/psd/psd40502/psd40502.jpg",
-      "zipFile": "/templates/psd/psd40502/psd40502.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "psd40502.PSD",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\psd40502.PSD",
+      "zipFile": "public\\templates\\psd\\psd40502\\psd40502.zip",
+      "width": 1242,
+      "height": 2208,
+      "image": "public\\templates\\psd\\psd40502\\psd40502.png"
     },
     {
       "name": "psd40505",
-      "preview": "/templates/psd/psd40505/psd40505.jpg",
-      "zipFile": "/templates/psd/psd40505/psd40505.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "psd40505.psd",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\psd40505.psd",
+      "zipFile": "public\\templates\\psd\\psd40505\\psd40505.zip",
+      "width": 1242,
+      "height": 2208,
+      "image": "public\\templates\\psd\\psd40505\\psd40505.png"
     },
     {
       "name": "psd40591",
-      "preview": "/templates/psd/psd40591/psd40591.jpg",
-      "zipFile": "/templates/psd/psd40591/psd40591.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "psd40591.psd",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\psd40591.psd",
+      "zipFile": "public\\templates\\psd\\psd40591\\psd40591.zip",
+      "width": 1753,
+      "height": 2480,
+      "image": "public\\templates\\psd\\psd40591\\psd40591.png"
     },
     {
       "name": "psd40607",
-      "preview": "/templates/psd/psd40607/psd40607.jpg",
-      "zipFile": "/templates/psd/psd40607/psd40607.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "psd40607.psd",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\psd40607.psd",
+      "zipFile": "public\\templates\\psd\\psd40607\\psd40607.zip",
+      "width": 3543,
+      "height": 5315,
+      "image": "public\\templates\\psd\\psd40607\\psd40607.png"
     },
     {
       "name": "psd40624",
-      "preview": "/templates/psd/psd40624/psd40624.jpg",
-      "zipFile": "/templates/psd/psd40624/psd40624.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "psd40624.psd",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\psd40624.psd",
+      "zipFile": "public\\templates\\psd\\psd40624\\psd40624.zip",
+      "width": 3543,
+      "height": 5315,
+      "image": "public\\templates\\psd\\psd40624\\psd40624.png"
     },
     {
       "name": "psd40627",
-      "preview": "/templates/psd/psd40627/psd40627.jpg",
-      "zipFile": "/templates/psd/psd40627/psd40627.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "psd40627.psd",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\psd40627.psd",
+      "zipFile": "public\\templates\\psd\\psd40627\\psd40627.zip",
+      "width": 2480,
+      "height": 3508,
+      "image": "public\\templates\\psd\\psd40627\\psd40627.png"
     },
     {
       "name": "psd40657",
-      "preview": "/templates/psd/psd40657/psd40657.jpg",
-      "zipFile": "/templates/psd/psd40657/psd40657.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "psd40657.PSD",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\psd40657.PSD",
+      "zipFile": "public\\templates\\psd\\psd40657\\psd40657.zip",
+      "width": 1242,
+      "height": 2208,
+      "image": "public\\templates\\psd\\psd40657\\psd40657.png"
     },
     {
       "name": "psd40660",
-      "preview": "/templates/psd/psd40660/psd40660.jpg",
-      "zipFile": "/templates/psd/psd40660/psd40660.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "psd40660.psd",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\psd40660.psd",
+      "zipFile": "public\\templates\\psd\\psd40660\\psd40660.zip",
+      "width": 1242,
+      "height": 2208,
+      "image": "public\\templates\\psd\\psd40660\\psd40660.png"
     },
     {
       "name": "psd40678",
-      "preview": "/templates/psd/psd40678/psd40678.jpg",
-      "zipFile": "/templates/psd/psd40678/psd40678.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "psd40678.psd",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\psd40678.psd",
+      "zipFile": "public\\templates\\psd\\psd40678\\psd40678.zip",
+      "width": 1242,
+      "height": 2208,
+      "image": "public\\templates\\psd\\psd40678\\psd40678.png"
     },
     {
       "name": "psd40679",
-      "preview": "/templates/psd/psd40679/psd40679.jpg",
-      "zipFile": "/templates/psd/psd40679/psd40679.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "psd40679.psd",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\psd40679.psd",
+      "zipFile": "public\\templates\\psd\\psd40679\\psd40679.zip",
+      "width": 2480,
+      "height": 3508,
+      "image": "public\\templates\\psd\\psd40679\\psd40679.png"
     },
     {
       "name": "zpsd7377",
-      "preview": "/templates/psd/zpsd7377/zpsd7377.jpg",
-      "zipFile": "/templates/psd/zpsd7377/zpsd7377.zip",
-      "width": 800,
-      "height": 600,
-      "fileName": "zpsd7377.psd",
-      "originalWidth": 800,
-      "originalHeight": 600
+      "inputPsdPath": "public\\templates\\files\\zpsd7377.psd",
+      "zipFile": "public\\templates\\psd\\zpsd7377\\zpsd7377.zip",
+      "width": 1080,
+      "height": 1350,
+      "image": "public\\templates\\psd\\zpsd7377\\zpsd7377.png"
     }
   ]
 }

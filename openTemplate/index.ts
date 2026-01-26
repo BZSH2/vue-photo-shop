@@ -1,59 +1,57 @@
-// build-templates.ts
+/*
+ 处理 PSD 文件
+ 1. 读取 PSD 文件 压缩为zip包
+ 2. 处理 PSD 文件中的图层
+ 3. 生成配置文件
+ 这里的处理其实是偏前端的，因为前端需要的是图片和配置文件，而不是 PSD 文件
+ 但是我想打造一个纯前端的项目，所以我需要在前端处理 PSD 文件
+ 所以我在项目运行或打包时，运行这个文件，生成配置文件和图片
+*/
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import process from 'node:process';
+import { createCanvas } from '@napi-rs/canvas';
+import { initializeCanvas, readPsd } from 'ag-psd';
 import JSZip from 'jszip';
-import sharp from 'sharp';
+import minimist from 'minimist';
 
-// ES模块中获取 __dirname
-const __filename = fileURLToPath(import.meta.url);
+// ES模块中获取 __filename
+const __filename = '';
 const __dirname = path.dirname(__filename);
+const args = minimist(process.argv.slice(2));
 
-// 配置接口
-interface Config {
-  inputDir: string;
-  outputDir: string;
-  configFile: string;
-  previewWidth: number;
-  previewHeight: number;
-  imageQuality: number;
-  zipLevel: number;
-  maxFileSizeMB: number;
-}
-
-// 简化的模板接口
-interface Template {
-  name: string; // 模板名称
-  preview: string; // 预览图地址
-  zipFile: string; // ZIP文件地址
-  width: number; // 预览图宽度
-  height: number; // 预览图高度
-  fileName: string; // 原始文件名
-  originalWidth: number; // 原始PSD宽度
-  originalHeight: number; // 原始PSD高度
-}
-
-// 配置文件接口
-interface TemplateConfig {
-  version: string;
-  count: number;
-  templates: Template[];
-}
+// 关键：在使用 ag-psd 前初始化 Canvas
+initializeCanvas(createCanvas as any);
 
 // 配置
-const CONFIG: Config = {
+const CONFIG: OpenTemplate.Config = {
   inputDir: path.join(__dirname, 'public/templates/files'),
   outputDir: path.join(__dirname, 'public/templates/psd'),
   configFile: path.join(__dirname, 'public/templates/config.json'),
-  previewWidth: 800,
-  previewHeight: 600,
-  imageQuality: 85,
-  zipLevel: 9,
-  maxFileSizeMB: 500,
 };
 
 /**
- * 确保目录存在
+ * 清理旧文件
+ */
+async function cleanupOldFiles(): Promise<void> {
+  console.log('🧹 清理旧的生成文件...');
+  try {
+    // 使用 fs.rm 删除文件夹（递归删除）
+    if (fs.existsSync(CONFIG.outputDir)) {
+      await fs.promises.rm(CONFIG.outputDir, {
+        recursive: true, // 递归删除
+        force: true, // 即使文件夹非空也删除
+      });
+      console.log(`清理成功`);
+    }
+  }
+  catch (error) {
+    console.log(`清理失败: ${error}`);
+  }
+}
+
+/**
+ * 确保目录存在 并创建
  */
 function ensureDirectory(dirPath: string): void {
   if (!fs.existsSync(dirPath)) {
@@ -62,196 +60,39 @@ function ensureDirectory(dirPath: string): void {
 }
 
 /**
- * 从文件名生成模板名称
+ * PSD 模板信息
+ * @param psdPath PSD文件路径
+ * @param fileName 文件名
+ * @param outputZipPath 输出ZIP文件路径
+ * @param width 预览图宽度
+ * @param height 预览图高度
+ * @param image 预览图路径
+ * @returns
  */
-function generateName(fileName: string): string {
-  const nameWithoutExt = path.basename(fileName, path.extname(fileName));
-  return nameWithoutExt
-    .replace(/[_-]/g, ' ')
-    .trim();
-}
-
-/**
- * 从文件名提取ID
- */
-function extractId(fileName: string): string {
-  const nameWithoutExt = path.basename(fileName, path.extname(fileName));
-  return nameWithoutExt
-    .replace(/\W/g, '')
-    .toLowerCase();
-}
-
-/**
- * 生成占位预览图
- */
-async function generatePreview(
-  outputPath: string,
+function getTemplateInfo(
+  psdPath: string,
   fileName: string,
-): Promise<{ width: number; height: number }> {
-  const nameWithoutExt = path.basename(fileName, path.extname(fileName));
-  const colors = [
-    { bg: '#f8f9fa', card: '#ffffff', text: '#495057', accent: '#007bff' },
-    { bg: '#fff5f5', card: '#ffffff', text: '#c92a2a', accent: '#fa5252' },
-    { bg: '#f8f0fc', card: '#ffffff', text: '#862e9c', accent: '#cc5de8' },
-    { bg: '#e7f5ff', card: '#ffffff', text: '#1864ab', accent: '#339af0' },
-    { bg: '#e6fcf5', card: '#ffffff', text: '#087f5b', accent: '#20c997' },
-  ];
-
-  const color = colors[Math.floor(Math.random() * colors.length)];
-  const displayName = nameWithoutExt.length > 20
-    ? `${nameWithoutExt.substring(0, 20)}...`
-    : nameWithoutExt;
-
-  const svg = ``;
-
-  await sharp(Buffer.from(svg))
-    .jpeg({ quality: CONFIG.imageQuality, mozjpeg: true })
-    .toFile(outputPath);
-
-  return { width: CONFIG.previewWidth, height: CONFIG.previewHeight };
-}
-
-/**
- * 创建ZIP压缩包
- */
-async function createZip(psdPath: string, outputPath: string): Promise<boolean> {
-  try {
-    const zip = new JSZip();
-    const fileName = path.basename(psdPath);
-    const psdData = fs.readFileSync(psdPath);
-
-    zip.file(fileName, psdData);
-
-    const zipData = await zip.generateAsync({
-      type: 'nodebuffer',
-      compression: 'DEFLATE',
-      compressionOptions: {
-        level: CONFIG.zipLevel,
-      },
-    });
-
-    fs.writeFileSync(outputPath, zipData);
-    return true;
-  }
-  catch (error) {
-    console.log(`创建ZIP失败: ${error}`);
-    return false;
-  }
-}
-
-/**
- * 获取文件大小
- */
-function getFileSize(filePath: string): { width: number; height: number } {
-  // 这里简化处理，返回固定尺寸
-  // 如果需要真实尺寸，可以考虑安装 psd 解析库
-  return { width: 1920, height: 1080 };
-}
-
-/**
- * 处理单个PSD文件
- */
-async function processPsdFile(psdPath: string): Promise<Template | null> {
-  const fileName = path.basename(psdPath);
-  const fileExt = path.extname(fileName).toLowerCase();
-
-  if (fileExt !== '.psd' && fileExt !== '.ps') {
-    console.log(`跳过非PSD文件: ${fileName}`);
-    return null;
-  }
-
-  const stats = fs.statSync(psdPath);
-  const fileSizeMB = stats.size / 1024 / 1024;
-
-  console.log(`处理文件: ${fileName} (${fileSizeMB.toFixed(2)} MB)`);
-
-  if (fileSizeMB > CONFIG.maxFileSizeMB) {
-    console.log(`文件过大，跳过处理`);
-    return null;
-  }
-
-  const id = extractId(fileName);
-  const originalSize = getFileSize(psdPath);
-  const outputDir = path.join(CONFIG.outputDir, id);
-
-  ensureDirectory(outputDir);
-
-  const previewPath = path.join(outputDir, `${id}.jpg`);
-  const previewSize = await generatePreview(previewPath, fileName);
-
-  const zipPath = path.join(outputDir, `${id}.zip`);
-  const zipCreated = await createZip(psdPath, zipPath);
-
-  if (!zipCreated) {
-    console.log(`创建ZIP失败，跳过文件`);
-    return null;
-  }
-
-  const template: Template = {
-    name: generateName(fileName),
-    preview: `/templates/psd/${id}/${id}.jpg`,
-    zipFile: `/templates/psd/${id}/${id}.zip`,
-    width: previewSize.width,
-    height: previewSize.height,
-    fileName,
-    originalWidth: originalSize.width,
-    originalHeight: originalSize.height,
+  outputZipPath: string,
+  width: number,
+  height: number,
+  imagePath: string,
+): OpenTemplate.Template {
+  const template: OpenTemplate.Template = {
+    name: fileName,
+    inputPsdPath: psdPath,
+    zipFile: outputZipPath,
+    width,
+    height,
+    image: imagePath,
   };
-
-  console.log(`生成成功:`);
-  console.log(`  预览图: ${template.width}x${template.height}`);
-  console.log(`  ZIP文件: ${template.zipFile}`);
-  console.log(`  原始尺寸: ${template.originalWidth}x${template.originalHeight}`);
-
   return template;
-}
-
-/**
- * 扫描并处理PSD文件
- */
-async function scanAndProcessPsdFiles(): Promise<Template[]> {
-  console.log('='.repeat(50));
-  console.log('🔍 扫描PSD文件...');
-  console.log(`输入目录: ${CONFIG.inputDir}`);
-
-  if (!fs.existsSync(CONFIG.inputDir)) {
-    console.log(`输入目录不存在，创建目录...`);
-    ensureDirectory(CONFIG.inputDir);
-    console.log(`请将PSD文件放入: ${CONFIG.inputDir}`);
-    return [];
-  }
-
-  ensureDirectory(CONFIG.outputDir);
-  const files = fs.readdirSync(CONFIG.inputDir);
-  const psdFiles = files.filter(file => /\.(psd|ps)$/i.test(file));
-
-  console.log(`找到 ${psdFiles.length} 个PSD文件`);
-
-  const templates: Template[] = [];
-
-  for (let i = 0; i < psdFiles.length; i++) {
-    const file = psdFiles[i];
-    console.log(`\n🔧 [${i + 1}/${psdFiles.length}] 处理: ${file}`);
-
-    try {
-      const template = await processPsdFile(path.join(CONFIG.inputDir, file || ''));
-      if (template) {
-        templates.push(template);
-      }
-    }
-    catch (error) {
-      console.log(`处理失败: ${error}`);
-    }
-  }
-
-  return templates;
 }
 
 /**
  * 生成配置文件
  */
-async function generateConfigFile(templates: Template[]): Promise<void> {
-  const config: TemplateConfig = {
+async function generateConfigFile(templates: OpenTemplate.Template[]): Promise<void> {
+  const config: OpenTemplate.TemplateConfig = {
     version: '1.0.0',
     count: templates.length,
     templates,
@@ -268,8 +109,6 @@ async function generateConfigFile(templates: Template[]): Promise<void> {
     console.log('\n生成的模板列表:');
     templates.forEach((template, index) => {
       console.log(`${index + 1}. ${template.name}`);
-      console.log(`   预览: ${template.width}x${template.height}`);
-      console.log(`   文件: ${template.fileName}`);
     });
 
     console.log('\n📁 生成的目录结构:');
@@ -282,47 +121,112 @@ async function generateConfigFile(templates: Template[]): Promise<void> {
 }
 
 /**
- * 清理旧文件
+ * 扫描并处理PSD文件
  */
-function cleanupOldFiles(): void {
-  console.log('🧹 清理旧的生成文件...');
-  try {
-    if (fs.existsSync(CONFIG.outputDir)) {
-      const items = fs.readdirSync(CONFIG.outputDir, { withFileTypes: true });
-      let deletedCount = 0;
+async function scanAndProcessPsdFiles(): Promise<OpenTemplate.Template[]> {
+  console.log(`输入目录: ${CONFIG.inputDir}`);
 
-      for (const item of items) {
-        if (item.isDirectory()) {
-          const itemPath = path.join(CONFIG.outputDir, item.name);
-          fs.rmSync(itemPath, { recursive: true, force: true });
-          deletedCount++;
-        }
-      }
+  /** 输入目录验证 */
+  if (!fs.existsSync(CONFIG.inputDir)) {
+    console.log(`输入目录不存在，创建目录...`);
+    ensureDirectory(CONFIG.inputDir);
+    console.log(`请将PSD文件放入: ${CONFIG.inputDir}`);
+    return [];
+  }
 
-      console.log(`清理了 ${deletedCount} 个目录`);
+  /** 输出目录创建 */
+  ensureDirectory(CONFIG.outputDir);
+  console.log(`✅ 已成功创建输出: ${CONFIG.outputDir}`);
+
+  /** 读取输入目录下的所有文件并筛选psd文件 */
+  const files = fs.readdirSync(CONFIG.inputDir);
+  const psdFiles = files.filter(file => /\.(?:psd|ps)$/i.test(file));
+  console.log(`找到 ${psdFiles.length} 个PSD文件`);
+
+  /** 用于储存目标模板信息 */
+  const templates: OpenTemplate.Template[] = [];
+
+  const zip = new JSZip();
+
+  /** 处理每个PSD文件 */
+  for (let i = 0; i < psdFiles.length; i++) {
+    const file = psdFiles[i]; // 目标文件名
+    const psdPath = path.join(CONFIG.inputDir, file || ''); // 当前输入文件路径
+
+    console.log(`\n🔧 [${i + 1}/${psdFiles.length}] 处理: ${file}`);
+    console.log(`读取 PSD 文件: ${psdPath}`);
+
+    // 获取文件名
+    const fileName = path.basename(psdPath).replace(/\.[^/.]+$/, '');
+
+    // 完整输出 文件夹
+    const outputPath = path.join(CONFIG.outputDir, `${fileName}`);
+
+    // 1. 检查输出目录是否存在 并创建
+    if (!fs.existsSync(outputPath)) {
+      // console.log(`📁 目录不存在: ${outputPath}`);
+      fs.mkdirSync(outputPath, { recursive: true });
+      console.log(`✅ 已创建目录: ${outputPath}`);
     }
+
+    // 2. 读取 PSD 文件
+    const psdData = fs.readFileSync(psdPath);
+
+    // 3. 添加文件到 ZIP
+    zip.file(fileName, psdData);
+    const content = await zip.generateAsync({
+      type: 'nodebuffer',
+      compression: 'DEFLATE', // 使用压缩
+      compressionOptions: {
+        level: 9, // 最大压缩级别
+      },
+    });
+
+    // 4.写入zip到输出目录
+    const outputZipPath = path.join(outputPath, `${fileName}.zip`);
+    fs.writeFileSync(outputZipPath, content);
+    console.log(`✅ 已写入 ZIP 文件: ${outputZipPath}`);
+
+    // 5. 使用readPsd读取PSD文件
+    const psd: any = readPsd(psdData, {
+      skipLayerImageData: false, // 必须为 false
+      skipCompositeImageData: false, // 必须为 false
+      skipThumbnail: false, // 如果需要缩略图
+    });
+
+    // 6. 转换为 PNG 并保存
+    const { width, height } = psd.canvas;
+    console.log(`PSD 宽度: ${width}, 高度: ${height}`);
+    const pngBuffer = psd.canvas?.toBuffer('image/png');
+    const imagePath = path.join(outputPath, `${fileName}.png`);
+    fs.writeFileSync(imagePath, pngBuffer);
+    console.log(`✅ 已转换为 PNG 文件: ${imagePath}`);
+
+    const template: OpenTemplate.Template = getTemplateInfo(
+      psdPath,
+      fileName,
+      outputZipPath,
+      width,
+      height,
+      imagePath,
+    );
+    templates.push(template);
   }
-  catch (error) {
-    console.log(`清理失败: ${error}`);
-  }
+
+  return templates;
 }
 
 /**
  * 主函数
  */
 async function main(): Promise<void> {
-  console.log('🚀 PSD模板生成系统');
-  console.log('='.repeat(50));
-  console.log('⚙️ 配置信息:');
-  console.log(`  输入目录: ${CONFIG.inputDir}`);
-  console.log(`  输出目录: ${CONFIG.outputDir}`);
-  console.log(`  预览尺寸: ${CONFIG.previewWidth}x${CONFIG.previewHeight}`);
-  console.log(`  图片质量: ${CONFIG.imageQuality}`);
-  console.log('='.repeat(50));
-
   try {
+    if (args.dev && !fs.existsSync(CONFIG.outputDir)) {
+      return;
+    }
     cleanupOldFiles();
     const templates = await scanAndProcessPsdFiles();
+
     await generateConfigFile(templates);
 
     console.log(`\n${'='.repeat(50)}`);
