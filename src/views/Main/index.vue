@@ -37,7 +37,7 @@ on('selectTemplate', async (item: any) => {
   // }
 
   // 2. 创建并加载 ZIP${item.zipFile}
-  const zipUrl = `${path}templates/psd40449.zip`;
+  const zipUrl = `${path}templates/zpsd7377.zip`;
   console.log('zipUrl', zipUrl);
 
   try {
