@@ -1,7 +1,9 @@
 // src/utils/path.js
 export function getPublicPath(): string {
   // 保持原有逻辑，用于获取部署后的相对路径（非 LFS 资源）
-  return import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL.replace(/\/$/, '');
+  // 注意：import.meta.env.BASE_URL 通常以 / 结尾（例如 "./" 或 "/repo/"）
+  // 不要移除末尾的 /，否则会导致拼接路径时出错（如 ".templates"）
+  return import.meta.env.BASE_URL;
 }
 
 export function getLfsPath(): string {
