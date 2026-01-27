@@ -55,7 +55,11 @@ on('selectTemplate', async (item: any) => {
 
     console.log('ZIP 文件内容:', zipData);
     // 2. 查找 ZIP 中的 PSD 文件
-    const psdFiles = Object.keys(zipData.files).filter(name => name.endsWith('.psd'));
+    const psdFiles = Object.keys(zipData.files).filter((name) => {
+      const isPsd = name.toLowerCase().endsWith('.psd');
+      const isMacFile = name.includes('__MACOSX') || name.split('/').pop()?.startsWith('._');
+      return isPsd && !isMacFile;
+    });
 
     if (psdFiles.length === 0) {
       console.error('ZIP 中没有找到 PSD 文件');
