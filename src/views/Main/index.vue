@@ -10,10 +10,11 @@ import * as fabric from 'fabric';
 import JSZip from 'jszip';
 import { onMounted, ref } from 'vue';
 import { useEventBus } from '@/hooks/useEventBus';
-import { getPublicPath } from '@/utils/path';
+import { getLfsPath, getPublicPath } from '@/utils/path';
 
 const { on } = useEventBus();
-const path = getPublicPath();
+const lfsPath = getLfsPath();
+const publicPath = getPublicPath();
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 let canvas: fabric.Canvas | null = null;
@@ -36,8 +37,14 @@ on('selectTemplate', async (item: any) => {
   //   return;11
   // }
 
-  // 2. 创建并加载 ZIP${item.zipFile}
-  const zipUrl = `${path}templates/zpsd7377.zip`;
+  // 2. 创建并加载 ZIP
+  // 如果是开发环境，使用相对路径；如果是生产环境，使用 LFS 路径
+  const baseUrl = import.meta.env.DEV ? publicPath : lfsPath;
+  // 移除开头的斜杠以避免双重斜杠（如果是相对路径则不需要）
+  const cleanZipPath = item.zipFile.startsWith('/') ? item.zipFile.slice(1) : item.zipFile;
+  // 确保路径拼接正确
+  const zipUrl = baseUrl ? (baseUrl.endsWith('/') ? `${baseUrl}${cleanZipPath}` : `${baseUrl}/${cleanZipPath}`) : cleanZipPath;
+
   console.log('zipUrl', zipUrl);
 
   try {
