@@ -39,45 +39,44 @@ on('selectTemplate', async (item: any) => {
   // 2. 创建并加载 ZIP
   const zipUrl = `${path}${item.zipFile}`;
   console.log('zipUrl', zipUrl);
-  const res = await fetch(zipUrl);
-  console.log('res', zipUrl, res);
-  const zip = new JSZip();
-  const zipData = await zip.loadAsync(res.arrayBuffer());
-
-  console.log('ZIP 文件内容:', zipData);
-  // 2. 查找 ZIP 中的 PSD 文件
-  const psdFiles = Object.keys(zipData.files).filter(name => name.endsWith('.psd'));
-
-  if (psdFiles.length === 0) {
-    console.error('ZIP 中没有找到 PSD 文件');
-    return;
-  }
-
-  // 3. 获取第一个 PSD 文件
-  const psdFileName = psdFiles[0];
-  const psdFile = zipData.file(psdFileName || '');
-
-  if (!psdFile) {
-    console.error('无法获取 PSD 文件');
-    return;
-  }
-
-  // 4. 将 PSD 文件转换为 ArrayBuffer
-  const psdArrayBuffer = await psdFile.async('arraybuffer');
-
-  console.log('PSD 文件 ArrayBuffer:', psdArrayBuffer);
-
-  canvas.clear();
-
-  // const url = `${path}${item.psd}`;
 
   try {
-    // console.log('res', url);
-    // const res = await fetch(url);
+    const res = await fetch(zipUrl);
+    console.log('res', zipUrl, res);
 
-    // const arrayBuffer = await res.arrayBuffer();
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
 
-    // console.log('arrayBuffer', res, arrayBuffer);
+    const arrayBuffer = await res.arrayBuffer();
+    const zip = new JSZip();
+    const zipData = await zip.loadAsync(arrayBuffer);
+
+    console.log('ZIP 文件内容:', zipData);
+    // 2. 查找 ZIP 中的 PSD 文件
+    const psdFiles = Object.keys(zipData.files).filter(name => name.endsWith('.psd'));
+
+    if (psdFiles.length === 0) {
+      console.error('ZIP 中没有找到 PSD 文件');
+      return;
+    }
+
+    // 3. 获取第一个 PSD 文件
+    const psdFileName = psdFiles[0];
+    const psdFile = zipData.file(psdFileName || '');
+
+    if (!psdFile) {
+      console.error('无法获取 PSD 文件');
+      return;
+    }
+
+    // 4. 将 PSD 文件转换为 ArrayBuffer
+    const psdArrayBuffer = await psdFile.async('arraybuffer');
+
+    console.log('PSD 文件 ArrayBuffer:', psdArrayBuffer);
+
+    canvas.clear();
+
     const psd = readPsd(psdArrayBuffer, {
       skipLayerImageData: false,
       skipCompositeImageData: false,
@@ -100,7 +99,7 @@ on('selectTemplate', async (item: any) => {
     }
   }
   catch (error) {
-    console.error('加载PSD失败:', error);
+    console.error('加载或解析ZIP失败:', error);
   }
   finally {
     // loading.value = false;
