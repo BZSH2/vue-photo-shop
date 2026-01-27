@@ -49,6 +49,7 @@ on('selectTemplate', async (item: any) => {
     }
 
     const arrayBuffer = await res.arrayBuffer();
+    console.log('arrayBuffer', arrayBuffer);
     const zip = new JSZip();
     const zipData = await zip.loadAsync(arrayBuffer);
 
