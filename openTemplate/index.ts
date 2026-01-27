@@ -17,7 +17,6 @@ import JSZip from 'jszip';
 // ES模块中获取 __filename
 const __filename = '';
 const __dirname = path.dirname(__filename);
-const argv = process.argv;
 
 // 关键：在使用 ag-psd 前初始化 Canvas
 initializeCanvas(createCanvas as any);

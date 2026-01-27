@@ -8,7 +8,7 @@
         @click="handleClick(item)"
       >
         <img :src="item.image" class="template-image">
-        <span class="template-name">{{ item.name }}</span>
+        <span class="template-name">{{ `${path}${item.name}` }}</span>
       </div>
     </div>
   </div>

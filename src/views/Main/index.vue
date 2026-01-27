@@ -38,10 +38,12 @@ on('selectTemplate', async (item: any) => {
   // }
 
   // 2. 创建并加载 ZIP
-  const zipUrl = `${path}${item.downloadUrl}`;
+  const zipUrl = `${path}${item.zipFile}`;
   const res = await fetch(zipUrl);
   const zip = new JSZip();
   const zipData = await zip.loadAsync(res.arrayBuffer());
+
+  console.log('ZIP 文件内容:', zipData);
   // 2. 查找 ZIP 中的 PSD 文件
   const psdFiles = Object.keys(zipData.files).filter(name => name.endsWith('.psd'));
 
