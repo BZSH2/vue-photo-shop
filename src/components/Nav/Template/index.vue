@@ -28,13 +28,7 @@ const configUrl = `${path}/templates/config.json`;
 async function getFolders() {
   const res = await fetch(configUrl);
   const data = await res.json();
-  return data.templates.map((item: any) => {
-    return {
-      ...item,
-      image: item.image.replace(/\\/g, '/').replace(/^public\//, '/'),
-      zipFile: item.zipFile.replace(/\\/g, '/').replace(/^public\//, '/'),
-    };
-  });
+  return data.templates;
 }
 
 /** 点击模板 */

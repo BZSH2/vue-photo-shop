@@ -6,7 +6,6 @@
 
 <script lang="ts" setup>
 import { readPsd } from 'ag-psd';
-import axios from 'axios';
 import * as fabric from 'fabric';
 import JSZip from 'jszip';
 import { onMounted, ref } from 'vue';
