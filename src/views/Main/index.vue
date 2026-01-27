@@ -38,7 +38,9 @@ on('selectTemplate', async (item: any) => {
 
   // 2. 创建并加载 ZIP
   const zipUrl = `${path}${item.zipFile}`;
+  console.log('zipUrl', zipUrl);
   const res = await fetch(zipUrl);
+  console.log('res', zipUrl, res);
   const zip = new JSZip();
   const zipData = await zip.loadAsync(res.arrayBuffer());
 
