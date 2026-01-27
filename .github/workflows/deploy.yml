@@ -54,8 +54,19 @@ jobs:
       - name: Configure Git LFS for deployment
         run: |
           git lfs install
-          # 将 .gitattributes 复制到 dist 目录，以便 gh-pages 分支也能识别 LFS 配置
-          cp .gitattributes dist/
+          # 策略变更：
+          # GitHub Pages 不支持托管 LFS 文件。即使推送到 gh-pages 分支，用户访问到的也是指针文件。
+          # 因此，我们必须在部署前，从 dist 目录中移除所有 LFS 追踪的大文件。
+          # 前端代码需要修改为直接访问 master 分支的 LFS 原始内容 (通过 media.githubusercontent.com)
+          
+          echo "Removing LFS files from dist..."
+          # 读取 .gitattributes 找到被 LFS 追踪的文件模式
+          # 简单起见，我们直接删除 *.psd 和 *.zip
+          find dist -name "*.psd" -type f -delete
+          find dist -name "*.zip" -type f -delete
+          
+          # 不需要复制 .gitattributes 了，因为我们不想在 gh-pages 里追踪这些文件
+          # cp .gitattributes dist/ 
           
       - name: Deploy # 部署
         uses: peaceiris/actions-gh-pages@v3
