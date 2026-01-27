@@ -8,7 +8,7 @@
         @click="handleClick(item)"
       >
         <img :src="`${path}${item.image}`" class="template-image">
-        <span class="template-name">{{ `${path}${item.name}` }}</span>
+        <span class="template-name">{{ item.name }}</span>
       </div>
     </div>
   </div>
@@ -28,7 +28,13 @@ const configUrl = `${path}/templates/config.json`;
 async function getFolders() {
   const res = await fetch(configUrl);
   const data = await res.json();
-  return data.templates;
+  return data.templates.map((item: any) => {
+    return {
+      ...item,
+      image: item.image.replace(/\\/g, '/').replace(/^public\//, '/'),
+      zipFile: item.zipFile.replace(/\\/g, '/').replace(/^public\//, '/'),
+    };
+  });
 }
 
 /** 点击模板 */
