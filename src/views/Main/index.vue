@@ -49,6 +49,14 @@ on('selectTemplate', async (item: any) => {
     }
 
     const arrayBuffer = await res.arrayBuffer();
+
+    // 检查是否为 Git LFS 指针文件
+    const textDecoder = new TextDecoder();
+    // 只读取前100个字节来检查，避免大文件性能损耗
+    const header = textDecoder.decode(arrayBuffer.slice(0, 100));
+    if (header.startsWith('version https://git-lfs.github.com/spec/v1')) {
+      throw new Error('检测到 Git LFS 指针文件，而非实际的二进制文件。请检查部署流程是否正确启用了 Git LFS。');
+    }
     console.log('arrayBuffer', arrayBuffer);
     const zip = new JSZip();
     const zipData = await zip.loadAsync(arrayBuffer);
