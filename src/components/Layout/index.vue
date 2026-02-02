@@ -14,7 +14,7 @@
   <LoadingMask />
 </template>
 
-<script lang="ts" scoped>
+<script setup lang="ts">
 import LoadingMask from './components/LoadingMask.vue';
 </script>
 
