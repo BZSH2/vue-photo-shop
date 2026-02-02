@@ -19,6 +19,7 @@ export default defineConfig({
       imports: ['vue', 'vue-router'],
       resolvers: [ElementPlusResolver()],
       dirs: ['src/hooks/useLoading.ts'],
+      dts: 'src/auto-imports.d.ts',
     }),
     Components({
       resolvers: [ElementPlusResolver()],

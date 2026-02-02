@@ -1,3 +1,4 @@
+import type { Ref } from 'vue';
 import { ref } from 'vue';
 
 const loading = ref(false);
