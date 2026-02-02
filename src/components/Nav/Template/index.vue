@@ -7,7 +7,7 @@
         :class="{ 'template-item-first': key === 0, 'template-item-second': key === 1 }"
         @click="handleClick(item)"
       >
-        <img :src="item.image" class="template-image">
+        <img :src="`${path}${item.image}`" class="template-image">
         <span class="template-name">{{ item.name }}</span>
       </div>
     </div>
@@ -22,7 +22,7 @@ import { getPublicPath } from '@/utils/path';
 const templateList = ref<any[]>([]);
 const { emit } = useEventBus();
 const path = getPublicPath();
-const configUrl = `${path}/templates/config.json`;
+const configUrl = `${path}templates/config.json`;
 
 /** 获取本地psd文件 */
 async function getFolders() {

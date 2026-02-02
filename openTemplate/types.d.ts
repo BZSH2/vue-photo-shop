@@ -4,6 +4,7 @@ namespace OpenTemplate {
     inputDir: string;
     outputDir: string;
     configFile: string;
+    publicDir: string;
   }
 
   // 简化的模板接口

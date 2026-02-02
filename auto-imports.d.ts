@@ -7,12 +7,14 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue').EffectScope
+  const ElLoading: typeof import('element-plus/es').ElLoading
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
   const customRef: typeof import('vue').customRef
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
   const effectScope: typeof import('vue').effectScope
+  const emitter: typeof import('./src/hooks/useEventBus').emitter
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
@@ -23,6 +25,7 @@ declare global {
   const isReadonly: typeof import('vue').isReadonly
   const isRef: typeof import('vue').isRef
   const isShallow: typeof import('vue').isShallow
+  const loading: typeof import('./src/utils/loading').loading
   const markRaw: typeof import('vue').markRaw
   const nextTick: typeof import('vue').nextTick
   const onActivated: typeof import('vue').onActivated
@@ -58,8 +61,10 @@ declare global {
   const useAttrs: typeof import('vue').useAttrs
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
+  const useEventBus: typeof import('./src/hooks/useEventBus').useEventBus
   const useId: typeof import('vue').useId
   const useLink: typeof import('vue-router').useLink
+  const useLoading: typeof import('./src/hooks/useLoading').useLoading
   const useModel: typeof import('vue').useModel
   const useRoute: typeof import('vue-router').useRoute
   const useRouter: typeof import('vue-router').useRouter

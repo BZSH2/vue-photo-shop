@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4 # 拉取代码
+        with:
+          lfs: true # 启用 Git LFS
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -29,15 +31,47 @@ jobs:
       - name: Build project (如果需要构建)
         run: pnpm build
 
-      - name: Show Git status (调试)
-        run: git status
-
-      - name: Show Git branches (调试)
-        run: git branch -a
-
+      # 关键步骤：在部署前删除 dist 目录中的大文件，改为使用原始链接或确保它们被 LFS 正确处理
+      # 由于 gh-pages 分支不支持 LFS (通常)，我们需要一种策略。
+      # 策略 A: 如果这些大文件必须在前端访问，它们必须在 gh-pages 中是普通文件（受限于 100MB）
+      # 策略 B: 使用 LFS 存储在 master 分支，gh-pages 只包含指针（但这会导致前端 fetch 失败，除非服务器支持 LFS API，GitHub Pages 不支持）
+      # 策略 C: 既然我们已经在 master 分支用 LFS 存储了，
+      # 我们可以在构建时，将这些大文件排除在 dist 之外，而是让前端直接去 fetch master 分支的 raw 内容？
+      # 不，GitHub raw 内容也有流量限制。
+      #
+      # 正确的做法是：GitHub Pages 本身有存储限制（1GB），且单文件限制 100MB。
+      # 你的报错是因为 git push 到 gh-pages 时，这些文件被当作普通 git 对象推送，超过了限制。
+      # 
+      # 解决方案：
+      # 1. 在 gh-pages 分支也启用 LFS。
+      # 2. 或者，不要把这些大文件放在 public 目录随构建产物一起发布。
+      # 
+      # 鉴于 `peaceiris/actions-gh-pages` 的工作方式，它会创建一个新的 commit。
+      # 我们需要配置它以支持 LFS，或者手动处理。
+      # 
+      # 尝试方案：在 actions-gh-pages 之前，手动初始化 git lfs 
+      
+      - name: Configure Git LFS for deployment
+        run: |
+          git lfs install
+          # 策略变更：
+          # GitHub Pages 不支持托管 LFS 文件。即使推送到 gh-pages 分支，用户访问到的也是指针文件。
+          # 因此，我们必须在部署前，从 dist 目录中移除所有 LFS 追踪的大文件。
+          # 前端代码需要修改为直接访问 master 分支的 LFS 原始内容 (通过 media.githubusercontent.com)
+          
+          echo "Removing LFS files from dist..."
+          # 读取 .gitattributes 找到被 LFS 追踪的文件模式
+          # 简单起见，我们直接删除 *.psd 和 *.zip
+          find dist -name "*.psd" -type f -delete
+          find dist -name "*.zip" -type f -delete
+          
+          # 不需要复制 .gitattributes 了，因为我们不想在 gh-pages 里追踪这些文件
+          # cp .gitattributes dist/ 
+          
       - name: Deploy # 部署
         uses: peaceiris/actions-gh-pages@v3
         with:
+          enable_jekyll: true # 允许Jekyll，虽然我们有.nojekyll，但这个选项可能影响一些行为，先保持默认或尝试开启
           force_orphan: true  # 原 force
           # 清理文件（false表示清理）
           keep_files: false  # 原 clean=true

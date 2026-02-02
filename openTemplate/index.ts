@@ -17,7 +17,6 @@ import JSZip from 'jszip';
 // ES模块中获取 __filename
 const __filename = '';
 const __dirname = path.dirname(__filename);
-const argv = process.argv;
 
 // 关键：在使用 ag-psd 前初始化 Canvas
 initializeCanvas(createCanvas as any);
@@ -27,6 +26,7 @@ const CONFIG: OpenTemplate.Config = {
   inputDir: path.join(__dirname, 'public/templates/files'),
   outputDir: path.join(__dirname, 'public/templates/psd'),
   configFile: path.join(__dirname, 'public/templates/config.json'),
+  publicDir: path.join(__dirname, 'public'), // 添加公共目录路径
 };
 
 /**
@@ -59,6 +59,15 @@ function ensureDirectory(dirPath: string): void {
 }
 
 /**
+ * 将绝对路径转换为相对于public目录的路径
+ */
+function toRelativePublicPath(absolutePath: string): string {
+  const relativePath = path.relative(CONFIG.publicDir, absolutePath);
+  // 将反斜杠转换为正斜杠，确保跨平台兼容性
+  return relativePath.split(path.sep).join('/');
+}
+
+/**
  * PSD 模板信息
  * @param psdPath PSD文件路径
  * @param fileName 文件名
@@ -78,11 +87,11 @@ function getTemplateInfo(
 ): OpenTemplate.Template {
   const template: OpenTemplate.Template = {
     name: fileName,
-    inputPsdPath: psdPath,
-    zipFile: outputZipPath,
+    inputPsdPath: toRelativePublicPath(psdPath), // 转换为相对public的路径
+    zipFile: toRelativePublicPath(outputZipPath), // 转换为相对public的路径
     width,
     height,
-    image: imagePath,
+    image: toRelativePublicPath(imagePath), // 转换为相对public的路径
   };
   return template;
 }
@@ -108,6 +117,8 @@ async function generateConfigFile(templates: OpenTemplate.Template[]): Promise<v
     console.log('\n生成的模板列表:');
     templates.forEach((template, index) => {
       console.log(`${index + 1}. ${template.name}`);
+      console.log(`   图片: ${template.image}`);
+      console.log(`   ZIP: ${template.zipFile}`);
     });
 
     console.log('\n📁 生成的目录结构:');
@@ -145,8 +156,6 @@ async function scanAndProcessPsdFiles(): Promise<OpenTemplate.Template[]> {
   /** 用于储存目标模板信息 */
   const templates: OpenTemplate.Template[] = [];
 
-  const zip = new JSZip();
-
   /** 处理每个PSD文件 */
   for (let i = 0; i < psdFiles.length; i++) {
     const file = psdFiles[i]; // 目标文件名
@@ -163,7 +172,6 @@ async function scanAndProcessPsdFiles(): Promise<OpenTemplate.Template[]> {
 
     // 1. 检查输出目录是否存在 并创建
     if (!fs.existsSync(outputPath)) {
-      // console.log(`📁 目录不存在: ${outputPath}`);
       fs.mkdirSync(outputPath, { recursive: true });
       console.log(`✅ 已创建目录: ${outputPath}`);
     }
@@ -171,8 +179,12 @@ async function scanAndProcessPsdFiles(): Promise<OpenTemplate.Template[]> {
     // 2. 读取 PSD 文件
     const psdData = fs.readFileSync(psdPath);
 
-    // 3. 添加文件到 ZIP
-    zip.file(fileName, psdData);
+    // 3. 为每个PSD文件创建独立的ZIP文件
+    const zip = new JSZip();
+
+    // 将PSD文件添加到ZIP中
+    zip.file(`${fileName}.psd`, psdData);
+
     const content = await zip.generateAsync({
       type: 'nodebuffer',
       compression: 'DEFLATE', // 使用压缩
@@ -185,31 +197,45 @@ async function scanAndProcessPsdFiles(): Promise<OpenTemplate.Template[]> {
     const outputZipPath = path.join(outputPath, `${fileName}.zip`);
     fs.writeFileSync(outputZipPath, content);
     console.log(`✅ 已写入 ZIP 文件: ${outputZipPath}`);
+    console.log(`   ZIP 内包含: ${fileName}.psd`);
 
-    // 5. 使用readPsd读取PSD文件
-    const psd: any = readPsd(psdData, {
-      skipLayerImageData: false, // 必须为 false
-      skipCompositeImageData: false, // 必须为 false
-      skipThumbnail: false, // 如果需要缩略图
-    });
+    try {
+      // 5. 使用readPsd读取PSD文件
+      const psd: any = readPsd(psdData, {
+        skipLayerImageData: false, // 必须为 false
+        skipCompositeImageData: false, // 必须为 false
+        skipThumbnail: false, // 如果需要缩略图
+      });
 
-    // 6. 转换为 PNG 并保存
-    const { width, height } = psd.canvas;
-    console.log(`PSD 宽度: ${width}, 高度: ${height}`);
-    const pngBuffer = psd.canvas?.toBuffer('image/png');
-    const imagePath = path.join(outputPath, `${fileName}.png`);
-    fs.writeFileSync(imagePath, pngBuffer);
-    console.log(`✅ 已转换为 PNG 文件: ${imagePath}`);
+      // 6. 转换为 PNG 并保存
+      const { width, height } = psd.canvas;
+      console.log(`PSD 宽度: ${width}, 高度: ${height}`);
 
-    const template: OpenTemplate.Template = getTemplateInfo(
-      psdPath,
-      fileName,
-      outputZipPath,
-      width,
-      height,
-      imagePath,
-    );
-    templates.push(template);
+      if (psd.canvas && typeof psd.canvas.toBuffer === 'function') {
+        const pngBuffer = psd.canvas.toBuffer('image/png');
+        const imagePath = path.join(outputPath, `${fileName}.png`);
+        fs.writeFileSync(imagePath, pngBuffer);
+        console.log(`✅ 已转换为 PNG 文件: ${imagePath}`);
+      }
+      else {
+        console.warn(`⚠️  ${fileName} 无法转换为PNG，跳过预览图生成`);
+        continue;
+      }
+
+      const template: OpenTemplate.Template = getTemplateInfo(
+        psdPath,
+        fileName,
+        outputZipPath,
+        width,
+        height,
+        path.join(outputPath, `${fileName}.png`),
+      );
+      templates.push(template);
+    }
+    catch (error: any) {
+      console.error(`❌ 处理PSD文件失败 ${fileName}:`, error.message || error);
+      console.log('尝试检查文件是否为有效的PSD格式');
+    }
   }
 
   return templates;
@@ -220,7 +246,7 @@ async function scanAndProcessPsdFiles(): Promise<OpenTemplate.Template[]> {
  */
 async function main(): Promise<void> {
   try {
-    cleanupOldFiles();
+    await cleanupOldFiles();
     const templates = await scanAndProcessPsdFiles();
 
     await generateConfigFile(templates);

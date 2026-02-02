@@ -1,10 +1,11 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "openTemplate"],
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "openTemplate", "auto-imports.d.ts", "components.d.ts"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
 
+    "types": ["vite/client", "unplugin-auto-import/types", "unplugin-vue-components/types"],
     "paths": {
       "@/*": ["./src/*"]
     }

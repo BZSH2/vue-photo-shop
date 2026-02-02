@@ -11,7 +11,12 @@
       <slot name="aside" />
     </div>
   </div>
+  <LoadingMask />
 </template>
+
+<script lang="ts" scoped>
+import LoadingMask from './components/LoadingMask.vue';
+</script>
 
 <style lang="scss" scoped>
 .layout-container {

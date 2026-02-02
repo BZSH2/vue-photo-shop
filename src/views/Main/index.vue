@@ -1,21 +1,22 @@
 <template>
-  <div class="canvas-container">
+  <div ref="canvasContainerRef" class="canvas-container">
     <canvas ref="canvasRef" class="canvas" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { readPsd } from 'ag-psd';
-import axios from 'axios';
 import * as fabric from 'fabric';
 import JSZip from 'jszip';
 import { onMounted, ref } from 'vue';
 import { useEventBus } from '@/hooks/useEventBus';
-import { getPublicPath } from '@/utils/path';
+import { getLfsPath, getPublicPath } from '@/utils/path';
 
 const { on } = useEventBus();
-const path = getPublicPath();
-
+const lfsPath = getLfsPath();
+const publicPath = getPublicPath();
+const { open, close } = useLoading();
+const canvasContainerRef = ref<HTMLDivElement | null>(null);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 let canvas: fabric.Canvas | null = null;
 // canvas容器的宽高
@@ -26,55 +27,73 @@ const templateSize = {
 };
 
 on('selectTemplate', async (item: any) => {
-  console.log('选择模板:', item);
+  open();
+
   if (!canvas) {
     console.error('Canvas未初始化');
     return;
   }
 
-  // if (!item?.psd) {
-  //   console.error('缺少PSD地址');
-  //   return;11
-  // }
-
   // 2. 创建并加载 ZIP
-  const zipUrl = `${path}${item.downloadUrl}`;
-  const res = await fetch(zipUrl);
-  const zip = new JSZip();
-  const zipData = await zip.loadAsync(res.arrayBuffer());
-  // 2. 查找 ZIP 中的 PSD 文件
-  const psdFiles = Object.keys(zipData.files).filter(name => name.endsWith('.psd'));
+  // 如果是开发环境，使用相对路径；如果是生产环境，使用 LFS 路径
+  const baseUrl = import.meta.env.DEV ? publicPath : lfsPath;
+  // 移除开头的斜杠以避免双重斜杠（如果是相对路径则不需要）
+  const cleanZipPath = item.zipFile.startsWith('/') ? item.zipFile.slice(1) : item.zipFile;
+  // 确保路径拼接正确
+  const zipUrl = baseUrl ? (baseUrl.endsWith('/') ? `${baseUrl}${cleanZipPath}` : `${baseUrl}/${cleanZipPath}`) : cleanZipPath;
 
-  if (psdFiles.length === 0) {
-    console.error('ZIP 中没有找到 PSD 文件');
-    return;
-  }
-
-  // 3. 获取第一个 PSD 文件
-  const psdFileName = psdFiles[0];
-  const psdFile = zipData.file(psdFileName || '');
-
-  if (!psdFile) {
-    console.error('无法获取 PSD 文件');
-    return;
-  }
-
-  // 4. 将 PSD 文件转换为 ArrayBuffer
-  const psdArrayBuffer = await psdFile.async('arraybuffer');
-
-  console.log('PSD 文件 ArrayBuffer:', psdArrayBuffer);
-
-  canvas.clear();
-
-  // const url = `${path}${item.psd}`;
+  console.log('zipUrl', zipUrl);
 
   try {
-    // console.log('res', url);
-    // const res = await fetch(url);
+    const res = await fetch(zipUrl);
+    console.log('res', zipUrl, res);
 
-    // const arrayBuffer = await res.arrayBuffer();
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
 
-    // console.log('arrayBuffer', res, arrayBuffer);
+    const arrayBuffer = await res.arrayBuffer();
+
+    // 检查是否为 Git LFS 指针文件
+    const textDecoder = new TextDecoder();
+    // 只读取前100个字节来检查，避免大文件性能损耗
+    const header = textDecoder.decode(arrayBuffer.slice(0, 100));
+    if (header.startsWith('version https://git-lfs.github.com/spec/v1')) {
+      throw new Error('检测到 Git LFS 指针文件，而非实际的二进制文件。请检查部署流程是否正确启用了 Git LFS。');
+    }
+    console.log('arrayBuffer', arrayBuffer);
+    const zip = new JSZip();
+    const zipData = await zip.loadAsync(arrayBuffer);
+
+    console.log('ZIP 文件内容:', zipData);
+    // 2. 查找 ZIP 中的 PSD 文件
+    const psdFiles = Object.keys(zipData.files).filter((name) => {
+      const isPsd = name.toLowerCase().endsWith('.psd');
+      const isMacFile = name.includes('__MACOSX') || name.split('/').pop()?.startsWith('._');
+      return isPsd && !isMacFile;
+    });
+
+    if (psdFiles.length === 0) {
+      console.error('ZIP 中没有找到 PSD 文件');
+      return;
+    }
+
+    // 3. 获取第一个 PSD 文件
+    const psdFileName = psdFiles[0];
+    const psdFile = zipData.file(psdFileName || '');
+
+    if (!psdFile) {
+      console.error('无法获取 PSD 文件');
+      return;
+    }
+
+    // 4. 将 PSD 文件转换为 ArrayBuffer
+    const psdArrayBuffer = await psdFile.async('arraybuffer');
+
+    console.log('PSD 文件 ArrayBuffer:', psdArrayBuffer);
+
+    canvas.clear();
+
     const psd = readPsd(psdArrayBuffer, {
       skipLayerImageData: false,
       skipCompositeImageData: false,
@@ -97,10 +116,10 @@ on('selectTemplate', async (item: any) => {
     }
   }
   catch (error) {
-    console.error('加载PSD失败:', error);
+    console.error('加载或解析ZIP失败:', error);
   }
   finally {
-    // loading.value = false;
+    close();
   }
 });
 
@@ -234,7 +253,6 @@ function initCanvas() {
   }
   templateSize.width = (canvasRef.value.parentElement?.clientWidth || 0) - 40;
   templateSize.height = (canvasRef.value.parentElement?.clientHeight || 0) - 40;
-  // console.log(, );
   canvas = new fabric.Canvas(canvasRef.value, {
     width: templateSize.width,
     height: templateSize.height,
