@@ -38,8 +38,48 @@ on('download', async () => {
   link.click();
 });
 
-on('uploadImage', (uploadFile: any) => {
-  console.log('uploadFile', uploadFile);
+on('uploadImage', async (uploadFile: any) => {
+  const img = await fabric.Image.fromURL(uploadFile.url || '', {}, {
+    scaleX: 0.1,
+    scaleY: 0.1,
+    left: canvas!.width / 2,
+    top: canvas!.height / 2,
+  });
+
+  if (!img) {
+    return;
+  }
+  canvas?.add(img);
+});
+
+on('selectAddText', (item: unknown) => {
+  const textItem = item as Text.Item;
+  console.log(textItem);
+
+  const text = new fabric.IText(`请输入${textItem.label}`, {
+    left: canvas!.width / 2,
+    top: canvas!.height / 2,
+    fontSize: textItem.fontSize,
+    fontFamily: 'Arial',
+    fill: '#000000',
+    originX: 'center',
+    originY: 'center',
+    hasControls: true,
+    hasBorders: true,
+  });
+  canvas?.add(text);
+});
+
+on('qrCodeGenerated', async (qrDataURL: any) => {
+  const img = await fabric.Image.fromURL(qrDataURL, {}, {
+    left: canvas!.width / 2,
+    top: canvas!.height / 2,
+  });
+
+  if (!img) {
+    return;
+  }
+  canvas?.add(img);
 });
 
 function initCanvas() {

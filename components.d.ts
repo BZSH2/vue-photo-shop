@@ -13,12 +13,15 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Add: typeof import('./src/components/Nav/Add/index.vue')['default']
+    AddCheck: typeof import('./src/components/Nav/Add/components/AddCheck.vue')['default']
+    Code: typeof import('./src/components/Nav/Add/components/Code.vue')['default']
     Download: typeof import('./src/components/Header/Download.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCollapse: typeof import('element-plus/es')['ElCollapse']
     ElCollapseItem: typeof import('element-plus/es')['ElCollapseItem']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElInput: typeof import('element-plus/es')['ElInput']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
@@ -28,6 +31,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Template: typeof import('./src/components/Nav/Template/index.vue')['default']
+    Text: typeof import('./src/components/Nav/Add/components/Text.vue')['default']
     UploadImage: typeof import('./src/components/Nav/Add/components/UploadImage.vue')['default']
   }
 }
@@ -35,12 +39,15 @@ declare module 'vue' {
 // For TSX support
 declare global {
   const Add: typeof import('./src/components/Nav/Add/index.vue')['default']
+  const AddCheck: typeof import('./src/components/Nav/Add/components/AddCheck.vue')['default']
+  const Code: typeof import('./src/components/Nav/Add/components/Code.vue')['default']
   const Download: typeof import('./src/components/Header/Download.vue')['default']
   const ElButton: typeof import('element-plus/es')['ElButton']
   const ElCollapse: typeof import('element-plus/es')['ElCollapse']
   const ElCollapseItem: typeof import('element-plus/es')['ElCollapseItem']
   const ElDialog: typeof import('element-plus/es')['ElDialog']
   const ElIcon: typeof import('element-plus/es')['ElIcon']
+  const ElInput: typeof import('element-plus/es')['ElInput']
   const ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
   const ElTooltip: typeof import('element-plus/es')['ElTooltip']
   const ElUpload: typeof import('element-plus/es')['ElUpload']
@@ -50,5 +57,6 @@ declare global {
   const RouterLink: typeof import('vue-router')['RouterLink']
   const RouterView: typeof import('vue-router')['RouterView']
   const Template: typeof import('./src/components/Nav/Template/index.vue')['default']
+  const Text: typeof import('./src/components/Nav/Add/components/Text.vue')['default']
   const UploadImage: typeof import('./src/components/Nav/Add/components/UploadImage.vue')['default']
 }
