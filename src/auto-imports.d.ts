@@ -7,12 +7,15 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue').EffectScope
+  const ElMessage: typeof import('element-plus/es').ElMessage
+  const ElMessageBox: typeof import('element-plus/es').ElMessageBox
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
   const customRef: typeof import('vue').customRef
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
   const effectScope: typeof import('vue').effectScope
+  const emitter: typeof import('./hooks/useEventBus').emitter
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
@@ -58,6 +61,7 @@ declare global {
   const useAttrs: typeof import('vue').useAttrs
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
+  const useEventBus: typeof import('./hooks/useEventBus').useEventBus
   const useId: typeof import('vue').useId
   const useLink: typeof import('vue-router').useLink
   const useLoading: typeof import('./hooks/useLoading').useLoading

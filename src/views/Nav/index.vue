@@ -2,6 +2,9 @@
   <nav class="nav-panel">
     <NavAside v-model="active" />
     <NavInner v-model="active">
+      <template v-if="active === 'add'">
+        <AddNav />
+      </template>
       <template v-if="active === 'template'">
         <TemplateNav />
       </template>
@@ -11,6 +14,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import AddNav from '@/components/Nav/Add/index.vue';
 import TemplateNav from '@/components/Nav/Template/index.vue';
 import NavAside from './components/NavAside.vue';
 import NavInner from './components/NavInner.vue';

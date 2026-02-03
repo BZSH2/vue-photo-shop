@@ -6,7 +6,6 @@ import AutoImport from 'unplugin-auto-import/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
 import { defineConfig } from 'vite';
-import vueDevTools from 'vite-plugin-vue-devtools';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -14,11 +13,10 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-    vueDevTools(),
     AutoImport({
       imports: ['vue', 'vue-router'],
       resolvers: [ElementPlusResolver()],
-      dirs: ['src/hooks/useLoading.ts'],
+      dirs: ['src/hooks/useLoading.ts', 'src/hooks/useEventBus.ts'],
       dts: 'src/auto-imports.d.ts',
     }),
     Components({
