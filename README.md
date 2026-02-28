@@ -2,6 +2,10 @@
 
 一个基于 Vue 3 + TypeScript + Fabric.js 的在线照片编辑应用，支持 PSD 模板解析、图片合成与编辑功能。
 
+## 🖥 在线预览
+
+https://bzsh2.github.io/vue-photo-shop/
+
 ## ✨ 功能特性
 
 - **PSD 模板解析**：支持解析 PSD 文件图层，并在 Canvas 中还原显示（基于 `ag-psd`）。
