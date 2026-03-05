@@ -1,14 +1,34 @@
-import { createPinia } from "pinia";
+import type { App as VueApp } from 'vue';
+import { createPinia } from 'pinia';
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import '@/styles/index.scss';
 
-import { createApp } from "vue";
-import App from "./App.vue";
+let app: VueApp<Element> | null = null;
 
-import router from "./router";
-import "@/styles/index.scss";
+function render(props: any = {}): void {
+  const { container } = props;
+  app = createApp(App);
+  app.use(createPinia());
+  app.use(router);
+  const mountPoint = container ? container.querySelector('#app') : '#app';
+  app.mount(mountPoint as Element | string);
+}
 
-const app = createApp(App);
+export async function bootstrap(): Promise<void> {
+  // 预加载，仅在被主应用加载时调用一次
+}
 
-app.use(createPinia());
-app.use(router);
+export async function mount(props: any): Promise<void> {
+  render(props);
+}
 
-app.mount("#app");
+export async function unmount(): Promise<void> {
+  app?.unmount();
+  app = null;
+}
+
+if (!(window as any).__POWERED_BY_QIANKUN__) {
+  render();
+}

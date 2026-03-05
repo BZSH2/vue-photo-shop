@@ -31,7 +31,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Template: typeof import('./src/components/Nav/Template/index.vue')['default']
-    Text: typeof import('./src/components/Nav/Add/components/Text.vue')['default']
     UploadImage: typeof import('./src/components/Nav/Add/components/UploadImage.vue')['default']
   }
 }
@@ -57,6 +56,5 @@ declare global {
   const RouterLink: typeof import('vue-router')['RouterLink']
   const RouterView: typeof import('vue-router')['RouterView']
   const Template: typeof import('./src/components/Nav/Template/index.vue')['default']
-  const Text: typeof import('./src/components/Nav/Add/components/Text.vue')['default']
   const UploadImage: typeof import('./src/components/Nav/Add/components/UploadImage.vue')['default']
 }
