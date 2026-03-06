@@ -2,6 +2,7 @@ import type { App as VueApp } from 'vue';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 import App from './App.vue';
+import { startMicroFrontend } from './host';
 import router from './router';
 import '@/styles/index.scss';
 
@@ -31,4 +32,5 @@ export async function unmount(): Promise<void> {
 
 if (!(window as any).__POWERED_BY_QIANKUN__) {
   render();
+  router.isReady().then(() => startMicroFrontend());
 }
